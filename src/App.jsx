@@ -54,6 +54,7 @@ export default function App() {
       <Suspense fallback={<Loading />}>
         <Routes>
           <Route path="/admin" element={<AdminApp />}>
+            <Route index element={<AdminPages />} />
             <Route path="*" element={<AdminPages />} />
           </Route>
           <Route

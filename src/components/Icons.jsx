@@ -49,3 +49,19 @@ export function Stars({ value = 5, className = '' }) {
     </span>
   )
 }
+
+// ─── Icônes de l'admin ─────────────────────────────────────────
+export const HomeIcon = make(<><path d="M4 11 12 4l8 7" /><path d="M6 10v10h12V10" /></>)
+export const ReceiptIcon = make(<><path d="M6 3h12v18l-3-2-3 2-3-2-3 2V3Z" /><path d="M9 8h6M9 12h6" /></>)
+export const TagIcon = make(<><path d="M3 12V4h8l9 9-8 8-9-9Z" /><circle cx="7.5" cy="8" r="1.3" /></>)
+export const GiftIcon = make(<><rect x="3" y="8" width="18" height="5" /><path d="M5 13v8h14v-8M12 8v13" /><path d="M12 8S10 3 7.5 4.5 9 8 12 8Zm0 0s2-5 4.5-3.5S15 8 12 8Z" /></>)
+export const PercentIcon = make(<><path d="M19 5 5 19" /><circle cx="7" cy="7" r="2.5" /><circle cx="17" cy="17" r="2.5" /></>)
+export const LeafIcon = make(<><path d="M5 19C5 10 10 5 20 4c-1 10-6 15-15 15Z" /><path d="M5 19 13 11" /></>)
+export const BookIcon = make(<><path d="M4 5a2 2 0 0 1 2-2h13v16H6a2 2 0 0 0-2 2V5Z" /><path d="M4 19a2 2 0 0 1 2-2h13" /></>)
+export const StarIcon = make(<path d="m12 3 2.7 5.6 6.1.9-4.4 4.3 1 6.1L12 17l-5.4 2.9 1-6.1-4.4-4.3 6.1-.9L12 3Z" />)
+export const HelpIcon = make(<><circle cx="12" cy="12" r="9" /><path d="M9.5 9.5a2.5 2.5 0 1 1 3.5 2.3c-.6.3-1 .8-1 1.5v.7" /><circle cx="12" cy="17" r=".6" fill="currentColor" /></>)
+export const ChartIcon = make(<><path d="M4 20h16" /><path d="M7 16v-5M12 16V7M17 16v-8" /></>)
+export const GearIcon = make(<><circle cx="12" cy="12" r="3" /><path d="M12 2v3M12 19v3M4.9 4.9l2.1 2.1M17 17l2.1 2.1M2 12h3M19 12h3M4.9 19.1 7 17M17 7l2.1-2.1" /></>)
+export const ExternalIcon = make(<><path d="M14 4h6v6M20 4l-9 9" /><path d="M18 14v6H4V6h6" /></>)
+export const LogoutIcon = make(<><path d="M15 4h4v16h-4" /><path d="M10 8l-4 4 4 4M6 12h10" /></>)
+export const ArrowUpRight = make(<path d="M7 17 17 7M8 7h9v9" />)

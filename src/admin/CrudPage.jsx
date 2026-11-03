@@ -117,7 +117,7 @@ export default function CrudPage({ config }) {
           )}
         </div>
         {error && <p className="mt-4 border border-bordeaux bg-white p-3 text-[14px] text-bordeaux">{error}</p>}
-        <div className="sticky bottom-0 mt-6 flex gap-3 bg-creme-light py-3">
+        <div className="sticky bottom-0 mt-6 flex gap-3 bg-admin/95 py-3 backdrop-blur">
           <button className="btn btn-bordeaux flex-1 md:flex-none" disabled={saving}>{saving ? 'Enregistrement…' : 'Enregistrer'}</button>
           <button type="button" className="btn btn-outline" onClick={() => setEditing(null)}>Annuler</button>
         </div>

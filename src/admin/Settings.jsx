@@ -174,7 +174,7 @@ export default function Settings() {
           </section>
         ))}
       </div>
-      <div className="sticky bottom-0 mt-6 flex items-center gap-4 bg-creme-light py-3">
+      <div className="sticky bottom-0 mt-6 flex items-center gap-4 bg-admin/95 py-3 backdrop-blur">
         <button className="btn btn-bordeaux" onClick={save} disabled={saving}>{saving ? 'Enregistrement…' : 'Enregistrer'}</button>
         {msg && <span className={`text-[14px] ${msg.ok ? 'text-green-700' : 'text-bordeaux'}`}>{msg.text}</span>}
       </div>

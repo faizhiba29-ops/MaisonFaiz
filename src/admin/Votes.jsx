@@ -13,7 +13,7 @@ export function VoteResults({ results }) {
               <span>{r.emoji} {r.name}</span>
               <span className="tabular-nums">{r.votes} vote{Number(r.votes) > 1 ? 's' : ''} · {pct}%</span>
             </div>
-            <div className="mt-1 h-2 bg-creme"><div className="h-full bg-bordeaux" style={{ width: `${pct}%` }} /></div>
+            <div className="mt-1.5 h-2 rounded-r-sm bg-admin"><div className="h-full rounded-r-sm bg-chart" style={{ width: `${pct}%` }} /></div>
           </li>
         )
       })}

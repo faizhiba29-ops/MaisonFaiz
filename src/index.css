@@ -13,6 +13,8 @@
   --color-kraft: #D9C3A0;
   --color-rose: #EBCFCB;
   --color-whatsapp: #25D366;
+  --color-admin: #F4F2EF;
+  --color-chart: #9C3F57; /* bordeaux éclairci, validé pour les graphiques (fond blanc) */
 
   --font-serif: "Cardo", Georgia, serif;
   --font-sans: "Archivo", system-ui, -apple-system, sans-serif;
@@ -176,3 +178,17 @@
 
 @keyframes fade-in { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: none; } }
 .animate-fade-in { animation: fade-in .3s ease-out both; }
+
+/* ─── Espace admin : interface d'outil, cartes arrondies ─── */
+.admin { background: var(--color-admin); font-size: 14px; letter-spacing: 0.2px; }
+.admin h1, .admin h2, .admin h3 { letter-spacing: 0.2px; }
+.admin-card, .admin main .bg-white {
+  background: #fff;
+  border: 1px solid rgba(18, 18, 18, 0.08);
+  border-radius: 12px;
+  box-shadow: 0 1px 2px rgba(18, 18, 18, 0.04);
+}
+.admin main table { border-radius: 12px; }
+.admin .btn { border-radius: 8px; min-height: 40px; padding: 8px 18px; font-size: 14px; letter-spacing: 0.3px; }
+.admin .input { border-radius: 8px; min-height: 42px; border-color: rgba(18, 18, 18, 0.16); }
+.admin .input:focus { border-color: var(--color-bordeaux); box-shadow: 0 0 0 3px rgba(107, 45, 60, 0.12); }
