@@ -98,7 +98,7 @@ function Product({ slug }) {
         </div>
 
         <div className="md:max-w-[480px]">
-          <p className="eyebrow">Granola by Hiba</p>
+          <p className="eyebrow">Maison Faiz foods</p>
           <h1 className="mt-2 text-[34px] leading-[1.15] md:text-[44px]">{product.name}</h1>
           {badges.length > 0 && <div className="mt-3 flex flex-wrap gap-1.5">{badges.map((b) => <Badge key={b} kind={b} />)}</div>}
 

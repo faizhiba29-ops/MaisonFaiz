@@ -1,5 +1,5 @@
 -- ════════════════════════════════════════════════════════════════
--- Granola by Hiba — contenu de départ (tout est modifiable dans /admin)
+-- Maison Faiz foods — contenu de départ (tout est modifiable dans /admin)
 -- ════════════════════════════════════════════════════════════════
 
 -- ─── Paramètres ────────────────────────────────────────────────
@@ -27,7 +27,7 @@ insert into public.settings (key, value) values
   ('why_homemade',      '[{"icon": "🚫", "title": "Zéro conservateur", "text": "Préparé en petites fournées, rien d''artificiel pour le faire durer."}, {"icon": "🌰", "title": "Ingrédients choisis", "text": "Avoine, fruits secs et miel sélectionnés un par un."}, {"icon": "🍯", "title": "Sucre contrôlé", "text": "Sucré au miel, juste ce qu''il faut — bien moins que les granolas industriels."}, {"icon": "⚡", "title": "Énergie pour la journée", "text": "Fibres + bonnes graisses = une énergie qui dure jusqu''au déjeuner."}]'),
   ('hygiene_steps', '[{"title": "Sélection des ingrédients", "text": "Avoine, amandes, noix, miel… je choisis chaque ingrédient avec soin.", "image": ""}, {"title": "Mélange avec le miel", "text": "Tout est mélangé à la main avec le miel, charlotte et gants portés.", "image": ""}, {"title": "Cuisson", "text": "Cuisson lente au four pour un croquant doré, surveillée de près.", "image": ""}, {"title": "Emballage soigné", "text": "Une fois refroidi, le granola est mis en sachet kraft fermé, prêt à partir.", "image": ""}]'),
   ('compare_slugs', '["granola-classic", "granola-chocolat"]'),
-  ('seo_description', '"Granola fait maison préparé avec amour à Fès : Classic, Chocolat, Ferrero Rocher, Lite et Sellou. Livraison partout au Maroc, commande sur WhatsApp."'),
+  ('seo_description', '"Maison Faiz foods : granola et sellou faits maison à Fès. Classic, Chocolat Noir, Ferrero Rocher, Lite et Sellou. Livraison partout au Maroc, commande sur WhatsApp."'),
   ('city', '"Fès"')
 on conflict (key) do nothing;
 
@@ -58,8 +58,8 @@ values
    'Avoine, miel, amandes, noix, raisins secs',
    'Le petit-déjeuner, avec du lait froid ou un yaourt'),
 
-  ('granola-chocolat', 'Granola Chocolat', 'غرانولا بالشكلاط',
-   'Notre best-seller Le croquant du granola maison avec de généreux morceaux de chocolat noir. Gourmand sans être écœurant, il fait l''unanimité chez les petits comme chez les grands.',
+  ('granola-chocolat', 'Granola Chocolat Noir', 'غرانولا بالشكلاط',
+   'Notre best-seller. Le croquant du granola maison avec de généreux morceaux de chocolat noir. Gourmand sans être écœurant, il fait l''unanimité chez les petits comme chez les grands.',
    'granola', array(select id from public.ingredients where slug in ('avoine','miel','amandes','noix','cacahuetes','chocolat')),
    false, true, 2, 'chocolat', 'BEST-SELLER',
    'Gourmand, chocolaté et bien croquant',
@@ -176,11 +176,11 @@ from (values ('Bol classique', 'recette-bol-lait'), ('Bol gourmand', 'recette-bo
              ('Petit-déj marocain revisité', 'recette-amlou')) as v(title, file)
 where r.title = v.title and coalesce(r.image, '') = '';
 update public.products p set images = v.imgs
-from (values ('granola-classic', array['/images/produits/classic.jpg', '/images/recettes/recette-bol-lait.jpg']),
-             ('granola-chocolat', array['/images/produits/chocolat.jpg', '/images/recettes/recette-bol-gourmand.jpg']),
-             ('granola-ferrero-rocher', array['/images/produits/ferrero.jpg']),
+from (values ('granola-classic', array['/images/produits/classic.jpg', '/images/produits/etiquette-classic.jpg', '/images/recettes/recette-bol-lait.jpg']),
+             ('granola-chocolat', array['/images/produits/chocolat.jpg', '/images/produits/etiquette-chocolat.jpg', '/images/recettes/recette-bol-gourmand.jpg']),
+             ('granola-ferrero-rocher', array['/images/produits/ferrero.jpg', '/images/produits/etiquette-ferrero.jpg']),
              ('granola-lite', array['/images/produits/lite.jpg', '/images/recettes/recette-smoothie-bowl.jpg']),
-             ('sellou', array['/images/produits/sellou.jpg'])) as v(slug, imgs)
+             ('sellou', array['/images/produits/sellou.jpg', '/images/produits/etiquette-sellou.jpg'])) as v(slug, imgs)
 where p.slug = v.slug and cardinality(p.images) = 0;
 update public.packs set image = '/images/produits/pack-duo.jpg' where slug = 'pack-duo' and coalesce(image, '') = '';
 update public.settings set value = '["/images/site/hero-1.jpg"]' where key = 'hero_images' and value = '[]'::jsonb;

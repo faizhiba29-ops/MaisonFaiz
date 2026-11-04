@@ -31,10 +31,9 @@ const NAV = [
 function Brand() {
   return (
     <div className="flex items-center gap-3">
-      <span className="flex h-9 w-9 items-center justify-center rounded-lg bg-bordeaux font-serif text-[18px] text-white">G</span>
       <span className="leading-tight">
-        <span className="block font-serif text-[17px] text-ink">Granola by Hiba</span>
-        <span className="block text-[11px] uppercase tracking-[1.5px] text-muted">Administration</span>
+        <img src="/images/brand/logo.png" alt="Maison Faiz foods" className="h-[34px] w-auto" />
+        <span className="mt-1 block text-[11px] uppercase tracking-[1.5px] text-muted">Administration</span>
       </span>
     </div>
   )
@@ -137,7 +136,7 @@ export default function AdminApp() {
   }, [isAdmin, pathname])
 
   useEffect(() => {
-    document.title = 'Admin · Granola by Hiba'
+    document.title = 'Admin · Maison Faiz'
     setMenu(false)
   }, [pathname])
 
@@ -162,7 +161,7 @@ export default function AdminApp() {
     <div className="admin min-h-screen md:flex">
       <header className="sticky top-0 z-30 flex h-14 items-center justify-between border-b border-line bg-white px-4 md:hidden">
         <button onClick={() => setMenu(true)} aria-label="Menu" className="-ml-2 p-2"><MenuIcon /></button>
-        <span className="font-serif text-[17px] text-ink">Granola by Hiba</span>
+        <img src="/images/brand/logo.png" alt="Maison Faiz foods" className="h-[26px] w-auto" />
         <span className="w-8" />
       </header>
       {menu && (

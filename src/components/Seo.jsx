@@ -1,6 +1,6 @@
 import { useEffect } from 'react'
 
-const SITE = 'Granola by Hiba'
+const SITE = 'Maison Faiz foods'
 
 function setMeta(attr, key, content) {
   if (!content) return
@@ -16,7 +16,7 @@ function setMeta(attr, key, content) {
 /** Titre, description et Open Graph de la page courante. */
 export default function Seo({ title, description, image }) {
   useEffect(() => {
-    const full = title ? `${title} · ${SITE}` : `${SITE} — Granola fait maison à Fès`
+    const full = title ? `${title} · ${SITE}` : `${SITE} — Granola et sellou faits maison à Fès`
     document.title = full
     setMeta('name', 'description', description)
     setMeta('property', 'og:title', full)

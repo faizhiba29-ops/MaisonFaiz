@@ -63,7 +63,7 @@ function Hero() {
       <section className="relative overflow-hidden bg-creme-light md:h-[78vh] md:min-h-[540px]">
         <div className="relative h-[50vh] min-h-[300px] md:absolute md:inset-0 md:h-full">
           {images.map((src, k) => (
-            <img key={src} src={src} alt="Granola by Hiba" fetchPriority={k === 0 ? 'high' : 'auto'} loading={k === 0 ? 'eager' : 'lazy'}
+            <img key={src} src={src} alt="Maison Faiz foods" fetchPriority={k === 0 ? 'high' : 'auto'} loading={k === 0 ? 'eager' : 'lazy'}
               className={`absolute inset-0 h-full w-full object-cover object-left transition-opacity duration-1000 ${k === i ? 'opacity-100' : 'opacity-0'}`} />
           ))}
         </div>
@@ -168,7 +168,7 @@ function About() {
   return (
     <section className="section bg-creme-light">
       <div className="container-site">
-        <ImageWithText image={s.about_image || '/images/site/commandes-pretes.jpg'} imageAlt="Granola by Hiba" reverse>
+        <ImageWithText image={s.about_image || '/images/site/commandes-pretes.jpg'} imageAlt="Maison Faiz foods" reverse>
           <p className="eyebrow">Notre histoire</p>
           <h2 className="h2 mt-2">{s.about_title || 'Qui suis-je ?'}</h2>
           <p className="mt-4 whitespace-pre-line">{s.about_text}</p>

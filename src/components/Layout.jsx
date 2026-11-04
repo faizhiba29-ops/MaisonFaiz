@@ -42,9 +42,8 @@ function AnnouncementBar() {
 
 function Logo({ className = '' }) {
   return (
-    <Link to="/" className={`font-serif leading-none text-ink ${className}`} aria-label="Granola by Hiba — accueil">
-      <span className="text-[22px] md:text-[24px]">Granola</span>{' '}
-      <span className="text-[15px] italic text-bordeaux">by Hiba</span>
+    <Link to="/" className={`block shrink-0 ${className}`} aria-label="Maison Faiz foods — accueil">
+      <img src="/images/brand/logo.png" alt="Maison Faiz foods" width="477" height="121" className="h-[36px] w-auto md:h-[44px]" />
     </Link>
   )
 }
@@ -191,7 +190,7 @@ function Footer() {
         </div>
       </div>
       <div className="border-t border-line py-5 text-center text-xs text-muted">
-        © {new Date().getFullYear()} Granola by Hiba · Fait maison à {s.city || 'Fès'}
+        © {new Date().getFullYear()} Maison Faiz foods · Fait maison à {s.city || 'Fès'}
       </div>
     </footer>
   )

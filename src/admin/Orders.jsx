@@ -108,7 +108,7 @@ export default function Orders() {
                       <h3 className="font-sans text-[12px] uppercase tracking-widest text-muted">Client</h3>
                       <p className="text-ink">{o.customer_name}<br />{o.phone}<br />{o.address}, {o.city}</p>
                       {o.note && <p className="bg-creme p-3">💬 {o.note}</p>}
-                      <a href={waLink(intlPhone(o.phone), `Salam ${o.customer_name} 👋 C'est Hiba de Granola by Hiba, concernant votre commande n°${o.number} : `)}
+                      <a href={waLink(intlPhone(o.phone), `Salam ${o.customer_name} 👋 C'est Hiba de Maison Faiz, concernant votre commande n°${o.number} : `)}
                         target="_blank" rel="noreferrer" className="btn btn-whatsapp min-h-[42px] w-full">
                         <WhatsAppIcon width={18} height={18} /> Écrire au client
                       </a>

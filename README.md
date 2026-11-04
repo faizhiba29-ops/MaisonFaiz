@@ -1,6 +1,6 @@
-# Granola by Hiba — site e-commerce
+# Maison Faiz foods — site e-commerce
 
-Site vitrine + panier + commande WhatsApp pour **Granola by Hiba** (Fès), avec un espace d'administration sur `/admin`.
+Site vitrine + panier + commande WhatsApp pour **Maison Faiz foods** (Fès), la marque de granola et sellou de Hiba, avec un espace d'administration sur `/admin`.
 
 - **Front** : React 19 + Vite + Tailwind CSS v4, mobile-first.
 - **Back** : Supabase (Postgres + Auth + Storage). Les prix, promos et codes promo sont **calculés côté serveur** (fonctions SQL `quote_cart` / `place_order`) ; le navigateur ne fait qu'afficher.

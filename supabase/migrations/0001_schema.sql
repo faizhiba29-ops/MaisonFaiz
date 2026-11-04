@@ -1,5 +1,5 @@
 -- ════════════════════════════════════════════════════════════════
--- Granola by Hiba — schéma, sécurité (RLS) et fonctions serveur
+-- Maison Faiz foods — schéma, sécurité (RLS) et fonctions serveur
 -- À exécuter dans Supabase > SQL Editor (ou `supabase db push`)
 -- ════════════════════════════════════════════════════════════════
 
