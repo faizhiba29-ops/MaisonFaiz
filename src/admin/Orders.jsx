@@ -1,6 +1,6 @@
 import { useCallback, useEffect, useMemo, useState } from 'react'
 import { WhatsAppIcon } from '../components/Icons'
-import { formatDate, formatDH } from '../lib/format'
+import { formatDate, formatDH, orderRef } from '../lib/format'
 import { supabase } from '../lib/supabase'
 import { waLink } from '../lib/whatsapp'
 import { exportOrders } from './exportOrders'
@@ -62,7 +62,7 @@ export default function Orders() {
     setBusy(kind)
     try {
       // Du plus ancien au plus récent : l'ordre de préparation des colis
-      await exportOrders([...picked].sort((a, b) => a.number - b.number), kind, (v) => statusOf(v).label)
+      await exportOrders([...picked].sort((a, b) => new Date(a.created_at) - new Date(b.created_at)), kind, (v) => statusOf(v).label)
     } catch (e) {
       window.alert(`Export impossible : ${e.message}`)
     }
@@ -92,7 +92,7 @@ export default function Orders() {
   }
 
   const remove = async (o) => {
-    if (!window.confirm(`Supprimer la commande n°${o.number} ? Cette action est définitive.`)) return
+    if (!window.confirm(`Supprimer la commande ${orderRef(o)} ? Cette action est définitive.`)) return
     const { error } = await supabase.from('orders').delete().eq('id', o.id)
     if (error) return window.alert(error.message)
     load()
@@ -149,11 +149,11 @@ export default function Orders() {
             return (
               <li key={o.id} className={`bg-white ${selected.has(o.id) ? 'ring-2 ring-bordeaux/40' : ''}`}>
                 <div className="flex items-start">
-                <label className="flex cursor-pointer items-center self-stretch pl-4" aria-label={`Sélectionner la commande n°${o.number}`}>
+                <label className="flex cursor-pointer items-center self-stretch pl-4" aria-label={`Sélectionner la commande ${orderRef(o)}`}>
                   <input type="checkbox" className="h-4 w-4 accent-bordeaux" checked={selected.has(o.id)} onChange={() => toggle(o.id)} />
                 </label>
                 <button className="flex min-w-0 flex-1 flex-wrap items-center gap-x-4 gap-y-1 p-4 text-left" onClick={() => setOpen(expanded ? null : o.id)}>
-                  <span className="font-serif text-[18px] text-ink">n°{o.number}</span>
+                  <span className="font-mono text-[15px] tracking-tight text-ink">{orderRef(o)}</span>
                   <span className={`rounded-full px-2.5 py-0.5 text-[12px] ${st.cls}`}>{st.label}</span>
                   <span className="text-[13px] text-muted">{formatDate(o.created_at)}</span>
                   <span className="w-full text-ink md:w-auto">{o.customer_name} · {o.city}</span>
@@ -183,7 +183,7 @@ export default function Orders() {
                       <h3 className="font-sans text-[12px] uppercase tracking-widest text-muted">Client</h3>
                       <p className="text-ink">{o.customer_name}<br />{o.phone}<br />{o.address}, {o.city}</p>
                       {o.note && <p className="bg-creme p-3">💬 {o.note}</p>}
-                      <a href={waLink(intlPhone(o.phone), `Salam ${o.customer_name}, c'est Hiba de Maison Faiz, concernant votre commande n°${o.number} : `)}
+                      <a href={waLink(intlPhone(o.phone), `Salam ${o.customer_name}, c'est Hiba de Maison Faiz, concernant votre commande ${orderRef(o)} : `)}
                         target="_blank" rel="noreferrer" className="btn btn-whatsapp min-h-[42px] w-full">
                         <WhatsAppIcon width={18} height={18} /> Écrire au client
                       </a>

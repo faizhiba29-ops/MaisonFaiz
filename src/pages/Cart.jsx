@@ -104,8 +104,8 @@ export default function Cart() {
       return
     }
 
-    const url = waLink(settings.whatsapp_number, buildOrderMessage(data, form, data.order_number))
-    setSent({ url, number: data.order_number })
+    const url = waLink(settings.whatsapp_number, buildOrderMessage(data, form, data.order_ref || data.order_number))
+    setSent({ url, number: data.order_ref || data.order_number })
     clear()
     window.location.href = url
   }
@@ -115,7 +115,7 @@ export default function Cart() {
       <section className="section">
         <Seo title="Commande envoyée" />
         <div className="container-site max-w-[560px] text-center">
-          <h1 className="text-[32px]">Merci, commande n°{sent.number} !</h1>
+          <h1 className="text-[32px]">Merci, commande {sent.number} !</h1>
           <p className="mt-3">
             WhatsApp va s'ouvrir avec votre commande pré-remplie : il ne reste qu'à appuyer sur <strong>Envoyer</strong>.
             Hiba vous confirme la livraison très vite.

@@ -1,7 +1,7 @@
 import { useEffect, useLayoutEffect, useMemo, useRef, useState } from 'react'
 import { Link } from 'react-router'
 import { ArrowUpRight } from '../components/Icons'
-import { formatDate, formatDH } from '../lib/format'
+import { formatDate, formatDH, orderRef } from '../lib/format'
 import { supabase } from '../lib/supabase'
 import { STATUSES } from './Orders'
 import { VoteResults } from './Votes'
@@ -152,9 +152,9 @@ export default function Dashboard() {
     let cancelled = false
     const since = new Date(startOfDay(Date.now()).getTime() - (2 * range - 1) * DAY).toISOString()
     Promise.all([
-      supabase.from('orders').select('id,number,created_at,status,total,items,customer_name,city')
+      supabase.from('orders').select('id,number,reference,created_at,status,total,items,customer_name,city')
         .gte('created_at', since).order('created_at', { ascending: false }).limit(3000),
-      supabase.from('orders').select('id,number,created_at,status,total,customer_name,city').order('created_at', { ascending: false }).limit(6),
+      supabase.from('orders').select('id,number,reference,created_at,status,total,customer_name,city').order('created_at', { ascending: false }).limit(6),
       supabase.from('orders').select('id', { count: 'exact', head: true }).eq('status', 'nouvelle'),
       supabase.rpc('active_promotions'),
       supabase.from('promotions').select('id,name,code,kind,value,usage_count,usage_limit,ends_at'),
@@ -291,7 +291,7 @@ export default function Dashboard() {
                         const st = statusOf(o.status)
                         return (
                           <tr key={o.id} className="hover:bg-ink/[0.02]">
-                            <td className="px-5 py-3"><span className="text-ink">n°{o.number}</span><span className="block text-muted">{formatDate(o.created_at)}</span></td>
+                            <td className="px-5 py-3"><span className="font-mono text-[13px] text-ink">{orderRef(o)}</span><span className="block text-muted">{formatDate(o.created_at)}</span></td>
                             <td className="py-3"><span className="text-ink">{o.customer_name}</span><span className="block text-muted">{o.city}</span></td>
                             <td className="py-3"><span className={`rounded-full px-2.5 py-0.5 text-[12px] ${st.cls}`}>{st.label}</span></td>
                             <td className="px-5 py-3 text-right tabular-nums text-ink">{formatDH(o.total)}</td>

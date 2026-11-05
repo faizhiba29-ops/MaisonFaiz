@@ -36,7 +36,8 @@ Les clientes commandent depuis leur téléphone et envoient leur commande sur Wh
 
 **Administration (`/admin`)**
 - Tableau de bord : chiffre d'affaires, commandes et panier moyen sur 7/30/90 jours avec évolution, graphique des ventes, commandes à traiter, produits les plus commandés
-- Suivi des commandes par statut, contact du client sur WhatsApp en un clic
+- Suivi des commandes par statut, références séquentielles `MF-2026-0001`, contact du client sur WhatsApp en un clic
+- Export Excel des commandes sélectionnées : fichier pour le transporteur (colis, montant à encaisser) et fichier détaillé, changement de statut groupé
 - Gestion complète : produits, catégories, packs, promotions, ingrédients, recettes, avis, FAQ, vote, paramètres du site
 - Photos redimensionnées et converties en WebP avant l'envoi
 
@@ -81,6 +82,7 @@ Dans Supabase → **SQL Editor**, exécuter dans l'ordre :
 | `supabase/migrations/0002_seed.sql` | Contenu de départ : produits, prix, pack, ingrédients, recettes, FAQ, paramètres |
 | `supabase/migrations/0003_store.sql` | Catégories, conservation par produit, pâtes à tartiner préparées (cachées) |
 | `supabase/migrations/0004_security.sql` | Durcissement : fonctions internes verrouillées, limites d'upload |
+| `supabase/migrations/0005_order_reference.sql` | Références de commande séquentielles `MF-AAAA-NNNN` |
 
 ### 2. Compte administrateur
 

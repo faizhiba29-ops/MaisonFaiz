@@ -24,7 +24,7 @@ const clean = (v) => String(v || '').replace(/[*_~]/g, '').trim() // évite de c
 export function buildOrderMessage(quote, customer, orderNumber) {
   const out = ['Salam Hiba,', 'Je voudrais passer une commande chez *Maison Faiz* :', '']
 
-  out.push(orderNumber ? `*COMMANDE N°${orderNumber}*` : '*MA COMMANDE*')
+  out.push(orderNumber ? `*COMMANDE ${/^MF-/.test(orderNumber) ? orderNumber : `N°${orderNumber}`}*` : '*MA COMMANDE*')
   for (const l of quote.lines) {
     const qty = l.qty > 1 ? `${l.qty} × ` : ''
     const format = l.type !== 'pack' && l.weight ? ` (${l.weight})` : ''

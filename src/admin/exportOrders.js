@@ -15,7 +15,7 @@ export function localPhone(p) {
 const lineLabel = (l) => `${l.qty > 1 ? `${l.qty} × ` : ''}${l.type === 'pack' || !l.weight ? l.name : `${l.weight} ${l.name}`}`
 const productsText = (o) => (o.items || []).map(lineLabel).join(' + ')
 const itemCount = (o) => (o.items || []).reduce((n, l) => n + Number(l.qty || 1), 0)
-const ref = (o) => `MF-${o.number}`
+const ref = (o) => o.reference || `MF-${o.number}`
 const money = (v) => ({ value: Number(v || 0), type: Number, format: '#,##0.00' })
 const text = (v) => ({ value: v == null ? '' : String(v), type: String, format: '@' })
 const date = (v) => ({ value: new Date(v), type: Date, format: 'dd/mm/yyyy hh:mm' })
@@ -24,7 +24,7 @@ const FORMATS = {
   livraison: {
     sheet: 'Colis',
     columns: [
-      ['Référence', 12, (o) => text(ref(o))],
+      ['Référence', 15, (o) => text(ref(o))],
       ['Nom du destinataire', 24, (o) => text(o.customer_name)],
       ['Téléphone', 14, (o) => text(localPhone(o.phone))],
       ['Ville', 16, (o) => text(o.city)],
@@ -39,7 +39,7 @@ const FORMATS = {
   detaille: {
     sheet: 'Commandes',
     columns: [
-      ['N°', 8, (o) => ({ value: Number(o.number), type: Number })],
+      ['Référence', 15, (o) => text(ref(o))],
       ['Date', 17, (o) => date(o.created_at)],
       ['Statut', 14, (o, st) => text(st(o.status))],
       ['Client', 24, (o) => text(o.customer_name)],

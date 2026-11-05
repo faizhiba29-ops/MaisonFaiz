@@ -19,7 +19,7 @@ Nous répondons sous 72 heures et corrigeons en priorité tout ce qui touche aux
 
 ## Liste de contrôle avant mise en ligne
 
-- [ ] Migrations `0001` à `0004` exécutées dans l'ordre
+- [ ] Migrations `0001` à `0005` exécutées dans l'ordre
 - [ ] Inscriptions désactivées (*Authentication → Sign In / Providers → Allow new users to sign up*)
 - [ ] Un seul compte admin par personne, avec un mot de passe solide et unique
 - [ ] Sur Vercel, seulement les 3 variables `VITE_*`, avec la clé **publique**

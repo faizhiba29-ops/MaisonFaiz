@@ -82,3 +82,8 @@ export function bulkSaving(product) {
 export function safeUrl(url, fallback = '#') {
   return /^https?:\/\//i.test(String(url || '').trim()) ? String(url).trim() : fallback
 }
+
+/** Référence affichée d'une commande : MF-2026-0001 (ancien numéro en secours) */
+export function orderRef(o) {
+  return o?.reference || (o?.number != null ? `#${o.number}` : '')
+}
