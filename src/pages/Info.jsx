@@ -37,7 +37,7 @@ export function Faq() {
             </div>
           )}
           <div className="mt-10 text-center">
-            <a href={waLink(s.whatsapp_number, 'Salam Hiba 👋 J\'ai une question : ')} target="_blank" rel="noreferrer" className="btn btn-whatsapp">
+            <a href={waLink(s.whatsapp_number, 'Salam Hiba, j\'ai une question : ')} target="_blank" rel="noreferrer" className="btn btn-whatsapp">
               <WhatsAppIcon width={18} height={18} /> Poser ma question
             </a>
           </div>
@@ -54,7 +54,7 @@ export function Contact() {
       icon: <WhatsAppIcon width={26} height={26} />,
       title: 'WhatsApp',
       text: s.whatsapp_display || s.whatsapp_number,
-      href: waLink(s.whatsapp_number, 'Salam Hiba 👋 '),
+      href: waLink(s.whatsapp_number, 'Salam Hiba, '),
       cta: 'Écrire sur WhatsApp',
     },
     {

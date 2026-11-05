@@ -19,15 +19,16 @@ const clean = (v) => String(v || '').replace(/[*_~]/g, '').trim() // évite de c
 /**
  * Message pré-rempli envoyé à la boutique, construit à partir du devis serveur.
  * Mise en forme WhatsApp : *gras*, une info par ligne, lisible d'un coup d'œil sur téléphone.
+ * Pas d'emoji : WhatsApp Web / Desktop les affiche parfois en « � » quand ils passent par un lien wa.me.
  */
 export function buildOrderMessage(quote, customer, orderNumber) {
-  const out = ['Salam Hiba 👋', 'Je voudrais passer une commande chez *Maison Faiz* :', '']
+  const out = ['Salam Hiba,', 'Je voudrais passer une commande chez *Maison Faiz* :', '']
 
-  out.push(orderNumber ? `🧾 *Commande n°${orderNumber}*` : '🧾 *Ma commande*')
+  out.push(orderNumber ? `*COMMANDE N°${orderNumber}*` : '*MA COMMANDE*')
   for (const l of quote.lines) {
     const qty = l.qty > 1 ? `${l.qty} × ` : ''
     const format = l.type !== 'pack' && l.weight ? ` (${l.weight})` : ''
-    out.push(`• ${qty}${l.name}${format} — ${shortDH(l.line_total)}`)
+    out.push(`- ${qty}${l.name}${format} : ${shortDH(l.line_total)}`)
   }
   out.push('')
 
@@ -39,14 +40,14 @@ export function buildOrderMessage(quote, customer, orderNumber) {
   out.push(`*Total : ${shortDH(quote.total)}*${hasFee ? '' : ' (hors livraison)'}`)
   out.push('')
 
-  out.push('📍 *Livraison*')
+  out.push('*LIVRAISON*')
   out.push(`Nom : ${clean(customer.name)}`)
   out.push(`Téléphone : ${prettyPhone(customer.phone)}`)
   out.push(`Ville : ${clean(customer.city)}`)
   out.push(`Adresse : ${clean(customer.address)}`)
   if (customer.note?.trim()) {
     out.push('')
-    out.push(`📝 Remarque : ${clean(customer.note)}`)
+    out.push(`*Remarque :* ${clean(customer.note)}`)
   }
   out.push('')
   out.push('Merci !')

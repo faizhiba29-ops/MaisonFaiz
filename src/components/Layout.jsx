@@ -203,7 +203,7 @@ function WhatsAppFloat() {
   if (pathname === '/panier' || !s.whatsapp_number) return null
   return (
     <a
-      href={waLink(s.whatsapp_number, 'Salam Hiba 👋 ')}
+      href={waLink(s.whatsapp_number, 'Salam Hiba, ')}
       target="_blank"
       rel="noreferrer"
       aria-label="Nous écrire sur WhatsApp"
