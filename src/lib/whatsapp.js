@@ -5,24 +5,50 @@ export function waLink(number, text = '') {
   return `https://wa.me/${n}${text ? `?text=${encodeURIComponent(text)}` : ''}`
 }
 
-/** Message pré-rempli envoyé à Hiba, construit à partir du devis serveur. */
+/** « 06 12 34 56 78 » : numéro marocain lisible (212…, +212… → 0…) */
+export function prettyPhone(p) {
+  let d = String(p || '').replace(/\D/g, '')
+  if (d.startsWith('00212')) d = d.slice(5)
+  else if (d.startsWith('212')) d = d.slice(3)
+  if (d.length === 9 && /^[5-7]/.test(d)) d = `0${d}`
+  return d.length === 10 ? d.replace(/(\d{2})(?=\d)/g, '$1 ') : String(p || '').trim()
+}
+
+const clean = (v) => String(v || '').replace(/[*_~]/g, '').trim() // évite de casser la mise en forme WhatsApp
+
+/**
+ * Message pré-rempli envoyé à la boutique, construit à partir du devis serveur.
+ * Mise en forme WhatsApp : *gras*, une info par ligne, lisible d'un coup d'œil sur téléphone.
+ */
 export function buildOrderMessage(quote, customer, orderNumber) {
-  const lines = quote.lines.map((l) => {
+  const out = ['Salam Hiba 👋', 'Je voudrais passer une commande chez *Maison Faiz* :', '']
+
+  out.push(orderNumber ? `🧾 *Commande n°${orderNumber}*` : '🧾 *Ma commande*')
+  for (const l of quote.lines) {
     const qty = l.qty > 1 ? `${l.qty} × ` : ''
-    const label = l.type === 'pack' ? l.name : `${l.weight} ${l.name}`
-    return `- ${qty}${label} – ${shortDH(l.line_total)}`
-  })
-  const out = ['Salam Hiba 👋 Je voudrais commander :', ...lines]
-  if (quote.code?.status === 'ok' && Number(quote.discount) > 0) {
-    out.push(`Code promo : ${quote.code.code} (${quote.code.label})`)
+    const format = l.type !== 'pack' && l.weight ? ` (${l.weight})` : ''
+    out.push(`• ${qty}${l.name}${format} — ${shortDH(l.line_total)}`)
   }
-  if (Number(quote.delivery_fee) > 0) out.push(`Livraison : ${shortDH(quote.delivery_fee)}`)
-  out.push(`Total : ${shortDH(quote.total)}`)
   out.push('')
-  out.push(
-    `Nom : ${customer.name} / Ville : ${customer.city} / Adresse : ${customer.address} / Tél : ${customer.phone}`,
-  )
-  if (customer.note?.trim()) out.push(`Remarque : ${customer.note.trim()}`)
-  if (orderNumber) out.push(`(Commande n°${orderNumber})`)
+
+  const hasDiscount = quote.code?.status === 'ok' && Number(quote.discount) > 0
+  const hasFee = Number(quote.delivery_fee) > 0
+  if (hasDiscount || hasFee) out.push(`Sous-total : ${shortDH(quote.subtotal)}`)
+  if (hasDiscount) out.push(`Code ${quote.code.code} (${quote.code.label}) : -${shortDH(quote.discount)}`)
+  out.push(`Livraison : ${hasFee ? shortDH(quote.delivery_fee) : 'à confirmer'}`)
+  out.push(`*Total : ${shortDH(quote.total)}*${hasFee ? '' : ' (hors livraison)'}`)
+  out.push('')
+
+  out.push('📍 *Livraison*')
+  out.push(`Nom : ${clean(customer.name)}`)
+  out.push(`Téléphone : ${prettyPhone(customer.phone)}`)
+  out.push(`Ville : ${clean(customer.city)}`)
+  out.push(`Adresse : ${clean(customer.address)}`)
+  if (customer.note?.trim()) {
+    out.push('')
+    out.push(`📝 Remarque : ${clean(customer.note)}`)
+  }
+  out.push('')
+  out.push('Merci !')
   return out.join('\n')
 }
