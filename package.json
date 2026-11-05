@@ -1,13 +1,18 @@
 {
-  "name": "granola",
+  "name": "maison-faiz-foods",
   "private": true,
-  "version": "0.0.0",
+  "version": "1.0.0",
+  "description": "Boutique en ligne Maison Faiz foods : granola et sellou faits maison à Fès, commande via WhatsApp, espace d'administration.",
   "type": "module",
+  "engines": {
+    "node": ">=20"
+  },
   "scripts": {
     "dev": "vite",
     "build": "vite build",
-    "lint": "oxlint",
-    "preview": "vite preview"
+    "preview": "vite preview",
+    "lint": "oxlint src",
+    "check": "npm run lint && npm run build"
   },
   "dependencies": {
     "@supabase/supabase-js": "^2.118.0",

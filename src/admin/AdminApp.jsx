@@ -138,6 +138,14 @@ export default function AdminApp() {
 
   useEffect(() => {
     document.title = 'Admin · Maison Faiz'
+    // L'administration ne doit jamais apparaître dans Google
+    let robots = document.head.querySelector('meta[name="robots"]')
+    if (!robots) {
+      robots = document.createElement('meta')
+      robots.name = 'robots'
+      document.head.appendChild(robots)
+    }
+    robots.content = 'noindex, nofollow'
     setMenu(false)
   }, [pathname])
 

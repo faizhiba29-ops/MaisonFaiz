@@ -77,3 +77,8 @@ export function bulkSaving(product) {
   const actual = priceFor(product, big)
   return reference > actual ? { weight: big, reference, actual, saved: reference - actual } : null
 }
+
+/** Lien externe saisi dans l'admin : seulement http(s), sinon lien neutre (bloque « javascript: »…). */
+export function safeUrl(url, fallback = '#') {
+  return /^https?:\/\//i.test(String(url || '').trim()) ? String(url).trim() : fallback
+}

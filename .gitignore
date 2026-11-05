@@ -24,3 +24,14 @@ dist-ssr
 *.sw?
 
 .env
+
+# Variables d'environnement (secrets) — seul .env.example est versionné
+.env.*
+!.env.example
+
+# Outils
+.vercel
+supabase/.temp
+supabase/.branches
+coverage
+Thumbs.db

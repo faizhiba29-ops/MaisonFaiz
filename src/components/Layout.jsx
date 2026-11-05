@@ -3,6 +3,7 @@ import { Link, NavLink, Outlet, useLocation } from 'react-router'
 import { useCart } from '../context/Cart'
 import { useSettings, useSiteData } from '../context/SiteData'
 import { waLink } from '../lib/whatsapp'
+import { safeUrl } from '../lib/format'
 import { BagIcon, CloseIcon, InstagramIcon, MenuIcon, SearchIcon, WhatsAppIcon } from './Icons'
 import { ProductVisual } from './Product'
 
@@ -182,7 +183,7 @@ function Footer() {
               </a>
             </li>
             <li>
-              <a href={s.instagram_url} target="_blank" rel="noreferrer" className="inline-flex items-center gap-2 text-ink">
+              <a href={safeUrl(s.instagram_url)} target="_blank" rel="noreferrer" className="inline-flex items-center gap-2 text-ink">
                 <InstagramIcon width={18} height={18} /> @{s.instagram_handle}
               </a>
             </li>

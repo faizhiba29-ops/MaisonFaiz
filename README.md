@@ -1,84 +1,191 @@
-# Maison Faiz foods — site e-commerce
+# Maison Faiz foods
 
-Site vitrine + panier + commande WhatsApp pour **Maison Faiz foods** (Fès), la marque de granola et sellou de Hiba, avec un espace d'administration sur `/admin`.
+Boutique en ligne de **Maison Faiz foods**, marque de granola, sellou et créations maison préparés à Fès.
+Les clientes commandent depuis leur téléphone et envoient leur commande sur WhatsApp ; la boutique se gère entièrement depuis un espace d'administration.
 
-- **Front** : React 19 + Vite + Tailwind CSS v4, mobile-first.
-- **Back** : Supabase (Postgres + Auth + Storage). Les prix, promos et codes promo sont **calculés côté serveur** (fonctions SQL `quote_cart` / `place_order`) ; le navigateur ne fait qu'afficher.
-- **Commande** : panier stocké dans le navigateur → commande enregistrée en base (statut « Nouvelle ») → WhatsApp s'ouvre avec le message pré-rempli vers `wa.me/212618145078`.
+![CI](https://github.com/khammar-ben/GranolabyHiba/actions/workflows/ci.yml/badge.svg)
 
 ---
 
-## 1. Créer le projet Supabase
+## Sommaire
 
-1. Créer un projet sur [supabase.com](https://supabase.com) (région Europe conseillée).
-2. **SQL Editor** → coller et exécuter, dans l'ordre :
-   1. `supabase/migrations/0001_schema.sql` (tables, sécurité RLS, fonctions de prix, bucket `images`)
-   2. `supabase/migrations/0002_seed.sql` (produits, prix, Pack Duo, ingrédients, recettes, FAQ, vote, paramètres)
-   3. `supabase/migrations/0003_store.sql` (catégories de la boutique, conservation par produit, pâtes à tartiner préparées et cachées)
-3. **Créer le compte admin (unique)** :
-   - *Authentication → Users → Add user* : email + mot de passe de Hiba (cocher « Auto confirm »).
-   - Puis dans le SQL Editor :
-     ```sql
-     insert into public.admins (user_id)
-     select id from auth.users where email = 'email-de-hiba@exemple.com';
-     ```
-   - *Authentication → Sign In / Providers* : **désactiver « Allow new users to sign up »** pour qu'aucun autre compte ne puisse être créé.
-4. *Project Settings → API* : copier l'URL du projet et la clé `anon` (publique).
+- [Fonctionnalités](#fonctionnalités)
+- [Stack technique](#stack-technique)
+- [Architecture](#architecture)
+- [Installation](#installation)
+- [Variables d'environnement](#variables-denvironnement)
+- [Déploiement](#déploiement)
+- [Sécurité](#sécurité)
+- [Utilisation de l'admin](#utilisation-de-ladmin)
+- [Structure du projet](#structure-du-projet)
+- [Limites connues](#limites-connues)
 
-## 2. Lancer en local
+---
+
+## Fonctionnalités
+
+**Boutique**
+- Catalogue multi-catégories (granolas, sellou, pâtes à tartiner…) avec une page par catégorie
+- Formats libres par produit (250g, 500g, 1kg, « Pot 250g »…) et économie affichée sur les grands formats
+- Packs, badges (Nouveau, Best-seller, Promo, Épuisé), produits « Bientôt disponible »
+- Panier conservé dans le navigateur, codes promo, promotions automatiques avec prix barrés
+- Commande envoyée sur WhatsApp avec un message pré-rempli, et enregistrée en base
+- Pages Bienfaits (ingrédients et allergènes), Comment le déguster, FAQ, Contact
+- Sondage « prochain goût », avis clients, reels Instagram
+- Conçu d'abord pour le téléphone ; textes en français avec l'arabe là où il compte
+
+**Administration (`/admin`)**
+- Tableau de bord : chiffre d'affaires, commandes et panier moyen sur 7/30/90 jours avec évolution, graphique des ventes, commandes à traiter, produits les plus commandés
+- Suivi des commandes par statut, contact du client sur WhatsApp en un clic
+- Gestion complète : produits, catégories, packs, promotions, ingrédients, recettes, avis, FAQ, vote, paramètres du site
+- Photos redimensionnées et converties en WebP avant l'envoi
+
+## Stack technique
+
+| Couche | Outils |
+|---|---|
+| Interface | React 19, React Router 7, Tailwind CSS 4, Vite |
+| Données et authentification | Supabase (PostgreSQL, Auth, Storage) |
+| Logique métier | Fonctions PostgreSQL (`quote_cart`, `place_order`, `cast_vote`) |
+| Hébergement | Vercel |
+| Qualité | oxlint, GitHub Actions, Dependabot |
+
+## Architecture
+
+```
+ Navigateur (React)                       Supabase
+ ─────────────────                        ─────────────────────────────────────────
+ Boutique  ──── lecture publique ───────▶ Tables catalogue (RLS : lecture seule)
+           ──── quote_cart() ───────────▶ Calcul des prix, promos et codes (serveur)
+           ──── place_order() ──────────▶ Enregistrement de la commande + anti-spam
+           ──── wa.me/… ──▶ WhatsApp de la boutique
+
+ /admin    ──── connexion Supabase Auth ─▶ is_admin() : table admins
+           ──── lecture / écriture ─────▶ Toutes les tables (RLS : admins seulement)
+           ──── upload ────────────────▶ Storage « images » (photos ≤ 5 Mo)
+```
+
+Le navigateur n'est jamais cru sur un prix : chaque total est recalculé par le serveur à partir du catalogue et des promotions en vigueur.
+
+## Installation
+
+Prérequis : Node.js 20 ou plus, un projet [Supabase](https://supabase.com).
+
+### 1. Base de données
+
+Dans Supabase → **SQL Editor**, exécuter dans l'ordre :
+
+| Fichier | Contenu |
+|---|---|
+| `supabase/migrations/0001_schema.sql` | Tables, règles d'accès (RLS), fonctions de prix et de commande, stockage des images |
+| `supabase/migrations/0002_seed.sql` | Contenu de départ : produits, prix, pack, ingrédients, recettes, FAQ, paramètres |
+| `supabase/migrations/0003_store.sql` | Catégories, conservation par produit, pâtes à tartiner préparées (cachées) |
+| `supabase/migrations/0004_security.sql` | Durcissement : fonctions internes verrouillées, limites d'upload |
+
+### 2. Compte administrateur
+
+1. **Authentication → Users → Add user** : email + mot de passe solide, cocher *Auto Confirm User*.
+2. Lui donner l'accès admin (SQL Editor) :
+   ```sql
+   insert into public.admins (user_id)
+   select id from auth.users where email = 'admin@exemple.com';
+   ```
+3. **Authentication → Sign In / Providers** : désactiver **Allow new users to sign up**.
+
+### 3. Lancer en local
 
 ```bash
-cp .env.example .env      # puis remplir VITE_SUPABASE_URL, VITE_SUPABASE_ANON_KEY, VITE_SITE_URL
+cp .env.example .env    # puis renseigner les valeurs
 npm install
-npm run dev               # http://localhost:5173  —  admin : http://localhost:5173/admin
+npm run dev             # http://localhost:5173 — admin : /admin
 ```
 
-## 3. Mettre en ligne
-
-**Vercel** (recommandé) ou **Netlify** : importer le dépôt, commande `npm run build`, dossier `dist`, et ajouter les 3 variables d'environnement.
-Les redirections SPA sont déjà configurées (`vercel.json` et `public/_redirects`).
-
-`VITE_SITE_URL` doit être l'adresse finale du site (ex. `https://granolabyhiba.ma`) : elle sert à l'aperçu des liens partagés sur WhatsApp / Instagram.
-
----
-
-## Utilisation de l'admin (`/admin`)
-
-| Section | Ce qu'on y fait |
+| Script | Rôle |
 |---|---|
-| Tableau de bord | Commandes du jour / semaine, produits les plus commandés, promos actives, résultats du vote |
-| Commandes | Liste filtrable par statut (Nouvelle → Confirmée → En préparation → Expédiée → Livrée / Annulée), bouton « Écrire au client » sur WhatsApp, note interne |
-| Produits | Nom, photos (plusieurs, la 1re est la principale, la 2e apparaît au survol), prix 250g / 500g / 1kg activables, ingrédients, badges, disponibilité, ordre |
-| Packs | Produits inclus + poids, prix du pack |
-| Promotions | % ou montant fixe, cible (tout / produits / packs), code optionnel (vide = automatique), dates, limite d'utilisation, texte de bannière |
-| Ingrédients | Nom FR + arabe, emoji ou photo, bienfaits, allergène |
-| Recettes, Avis clients, FAQ | Contenu des pages publiques |
-| Vote des goûts | Ajouter / supprimer des options, réinitialiser |
-| Paramètres | WhatsApp, Instagram, 3 reels, textes du hero + photos, « Qui suis-je », étapes d'hygiène, livraison, conservation, comparaison Classic VS Chocolat |
+| `npm run dev` | Serveur de développement |
+| `npm run build` | Version de production dans `dist/` |
+| `npm run preview` | Tester la version de production en local |
+| `npm run lint` | Analyse du code |
+| `npm run check` | Lint + build (ce que fait la CI) |
 
-**Photos** : tant qu'aucune photo n'est uploadée, le site affiche des illustrations aux couleurs de la marque (sachet kraft, bocal, bol). Les photos sont automatiquement redimensionnées (max 1600px) et converties en WebP avant l'envoi. Format carré conseillé pour les produits.
+## Variables d'environnement
 
-### Règles de calcul des promos
-- Une promo **sans code** s'applique automatiquement : prix barré sur le site, et la meilleure promo est retenue par article.
-- Un **code promo** s'applique ensuite dans le panier, sur les articles ciblés.
-- Montant fixe : déduit **par article** ; sauf code promo ciblant « tout le site », déduit une seule fois sur la commande.
-- La **limite d'utilisation** compte les commandes passées avec la promo.
-- **Livraison** : si `Frais de livraison` = 0, le panier affiche « Confirmée sur WhatsApp » ; sinon les frais sont ajoutés au total (option « offerte dès X DH »).
+| Variable | Exemple | Rôle |
+|---|---|---|
+| `VITE_SUPABASE_URL` | `https://votre-projet.supabase.co` | Adresse du projet Supabase |
+| `VITE_SUPABASE_ANON_KEY` | `sb_publishable_…` | Clé **publique** du projet |
+| `VITE_SITE_URL` | `https://www.maisonfaiz.ma` | Adresse publique du site (aperçus de liens) |
+
+> ⚠️ Tout ce qui commence par `VITE_` est inclus dans le site et lisible par les visiteurs.
+> N'y mettez **jamais** la clé secrète (`sb_secret_…` / `service_role`) ni l'adresse `postgresql://` de la base. Le site refuse de démarrer s'il détecte une clé secrète.
+
+## Déploiement
+
+1. Sur [Vercel](https://vercel.com) : **Add New → Project**, importer ce dépôt (Vite est détecté automatiquement).
+2. Renseigner les 3 variables d'environnement ci-dessus.
+3. **Deploy**. Chaque push sur `main` redéploie le site.
+
+`vercel.json` configure les redirections de l'application, le cache des fichiers et les en-têtes de sécurité.
+
+## Sécurité
+
+| Protection | Détail |
+|---|---|
+| Règles d'accès (RLS) | Activées sur toutes les tables. Les visiteurs lisent seulement le catalogue visible ; commandes, codes promo et votes ne sont accessibles qu'aux admins |
+| Prix côté serveur | Totaux, promotions et codes recalculés par PostgreSQL ; un prix modifié dans le navigateur est ignoré |
+| Administration | Réservée aux comptes listés dans `admins` ; un compte créé ailleurs n'a aucun droit |
+| Anti-abus | 5 commandes par numéro et par heure, 20 commandes et 60 votes par minute pour tout le site, paniers limités à 50 lignes |
+| Fonctions internes | Non appelables depuis l'API, chemin de recherche figé |
+| Images | Stockage limité aux photos (JPEG, PNG, WebP, GIF), 5 Mo maximum, pas de SVG |
+| En-têtes HTTP | Content-Security-Policy stricte, HSTS, anti-iframe, `nosniff`, Referrer-Policy, Permissions-Policy |
+| Référencement | `/admin` et `/panier` exclus des moteurs de recherche |
+| Secrets | `.env` jamais versionné ; la CI vérifie qu'aucun secret ne se retrouve dans le build |
+
+Voir [SECURITY.md](SECURITY.md) pour signaler une faille et la liste de contrôle avant mise en ligne.
+
+## Utilisation de l'admin
+
+| Section | Usage |
+|---|---|
+| Tableau de bord | Indicateurs et tendances, commandes récentes, promos actives, vote |
+| Commandes | Statuts Nouvelle → Confirmée → En préparation → Expédiée → Livrée / Annulée, note interne, WhatsApp client |
+| Produits | Photos (la 1re est la principale, la 2e apparaît au survol), formats et prix, ingrédients, badges, disponibilité, visibilité |
+| Catégories | Une catégorie apparaît dans la boutique dès qu'elle contient un produit visible |
+| Packs | Produits inclus (avec leur format) et prix du pack |
+| Promotions | % ou montant fixe ; cible : tout le site, des produits ou des packs ; code optionnel ; dates ; limite d'utilisation ; texte de bannière |
+| Ingrédients, Recettes, Avis, FAQ, Vote | Contenu des pages publiques |
+| Paramètres | WhatsApp, Instagram, reels, textes de l'accueil, livraison, conservation |
+
+**Préparer un produit avant sa sortie** : le créer avec *Visible* décoché. Cocher seulement *Visible* l'affiche en « Bientôt disponible » ; cocher aussi *Disponible* (avec un format en vente et un prix) l'ouvre à la commande.
+
+**Règles des promotions**
+- Une promotion **sans code** s'applique automatiquement (prix barré) ; la meilleure est retenue par article.
+- Un **code** s'applique ensuite dans le panier, sur les articles ciblés.
+- Un montant fixe est déduit **par article**, sauf pour un code visant tout le site (déduit une fois).
+- La limite d'utilisation compte les commandes passées avec la promotion.
+
+## Structure du projet
+
+```
+├── .github/              CI (lint, build, contrôle des secrets) et Dependabot
+├── public/               images, logo, robots.txt, aperçu de partage
+├── src/
+│   ├── admin/            espace d'administration (CRUD générique, commandes, tableau de bord…)
+│   ├── components/       mise en page, cartes produits, icônes, SEO
+│   ├── context/          données du site et panier
+│   ├── lib/              client Supabase, formats et prix, WhatsApp, upload d'images
+│   └── pages/            pages publiques
+├── supabase/migrations/  schéma, règles d'accès, fonctions, contenu de départ
+└── vercel.json           redirections, cache et en-têtes de sécurité
+```
+
+## Limites connues
+
+- L'aperçu d'un lien partagé sur WhatsApp est le même pour toutes les pages (`public/og-image.jpg`) : les robots de partage n'exécutent pas le JavaScript. Un aperçu par produit demanderait un pré-rendu.
+- La commande est enregistrée avant l'envoi du message WhatsApp : une commande « Nouvelle » sans message reçu n'a peut-être pas été envoyée.
+- Le sondage limite à un vote par navigateur : suffisant pour un sondage, pas infalsifiable.
+- Le plan gratuit de Supabase met le projet en pause après 7 jours sans activité.
 
 ---
 
-## Structure
-
-```
-supabase/migrations/   schéma SQL, RLS, fonctions serveur, contenu de départ
-src/pages/             pages publiques (accueil, produit, bienfaits, recettes, FAQ, contact, panier)
-src/components/        layout, cartes produits, illustrations, icônes, SEO
-src/context/           données du site (catalogue, paramètres, promos) et panier
-src/lib/               client Supabase, formatage, prix promo affichés, message WhatsApp, upload images
-src/admin/             espace admin (CRUD générique + commandes, votes, paramètres, tableau de bord)
-```
-
-## Limites connues / pistes
-- L'aperçu de lien WhatsApp utilise l'image et le titre **généraux** du site (`public/og-image.jpg`) : les robots de WhatsApp n'exécutent pas le JavaScript. Pour un aperçu par produit, il faudrait un pré-rendu (ex. fonction edge Vercel).
-- Le vote des goûts est limité à un vote par navigateur (pas de compte) : suffisant pour un sondage, pas infalsifiable.
-- Anti-spam des commandes : 5 commandes max par numéro de téléphone et par heure.
+© Maison Faiz foods. Tous droits réservés — voir [LICENSE](LICENSE).

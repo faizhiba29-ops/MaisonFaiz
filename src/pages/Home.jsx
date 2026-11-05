@@ -6,7 +6,7 @@ import { packContents, PackCard, PriceTag, ProductCard, Visual } from '../compon
 import Seo from '../components/Seo'
 import { useCart } from '../context/Cart'
 import { useSettings, useSiteData } from '../context/SiteData'
-import { gridColsClass } from '../lib/format'
+import { gridColsClass, safeUrl } from '../lib/format'
 import { displayPrice } from '../lib/pricing'
 import { supabase } from '../lib/supabase'
 import { waLink } from '../lib/whatsapp'
@@ -361,7 +361,7 @@ function Instagram() {
             <p className="eyebrow mb-2">Instagram</p>
             <h2 className="h2">@{s.instagram_handle}</h2>
           </div>
-          <a href={s.instagram_url} target="_blank" rel="noreferrer" className="shrink-0 text-[15px] text-ink underline underline-offset-4 hover:text-bordeaux">
+          <a href={safeUrl(s.instagram_url)} target="_blank" rel="noreferrer" className="shrink-0 text-[15px] text-ink underline underline-offset-4 hover:text-bordeaux">
             Suivre
           </a>
         </div>
@@ -375,7 +375,7 @@ function Instagram() {
         ) : (
           <div className="grid grid-cols-2 gap-2 md:grid-cols-4">
             {INSTA_TILES.map((src) => (
-              <a key={src} href={s.instagram_url} target="_blank" rel="noreferrer" className="media-frame group block aspect-square overflow-hidden">
+              <a key={src} href={safeUrl(s.instagram_url)} target="_blank" rel="noreferrer" className="media-frame group block aspect-square overflow-hidden">
                 <img src={src} alt="" loading="lazy" className="h-full w-full object-cover transition-transform duration-700 group-hover:scale-[1.03]" />
               </a>
             ))}

@@ -49,7 +49,7 @@ export function ImageInput({ value, onChange, folder }) {
       <div className="flex flex-wrap gap-2">
         <label className="btn btn-outline min-h-0 cursor-pointer px-3 py-2 text-[12px]">
           {busy ? 'Envoi…' : value ? 'Remplacer' : 'Choisir une photo'}
-          <input type="file" accept="image/*" className="hidden" onChange={pick} disabled={busy} />
+          <input type="file" accept="image/jpeg,image/png,image/webp,image/gif" className="hidden" onChange={pick} disabled={busy} />
         </label>
         {value && <button type="button" className="text-[13px] text-bordeaux underline" onClick={() => onChange('')}>Retirer</button>}
       </div>
@@ -99,7 +99,7 @@ export function ImagesInput({ value = [], onChange, folder }) {
         ))}
         <label className="flex h-24 w-24 cursor-pointer flex-col items-center justify-center border border-dashed border-ink/40 text-[12px] text-muted hover:border-ink">
           {busy ? 'Envoi…' : <><PlusIcon /> Ajouter</>}
-          <input type="file" accept="image/*" multiple className="hidden" onChange={pick} disabled={busy} />
+          <input type="file" accept="image/jpeg,image/png,image/webp,image/gif" multiple className="hidden" onChange={pick} disabled={busy} />
         </label>
       </div>
       {err && <p className="mt-1 text-[12px] text-bordeaux">{err}</p>}

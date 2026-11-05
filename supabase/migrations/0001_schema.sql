@@ -269,6 +269,12 @@ declare
   v_fee numeric := 0;
   v_free_from numeric;
 begin
+  -- Garde-fous : un panier est une liste raisonnable, un code reste court
+  if jsonb_typeof(coalesce(p_items, '[]'::jsonb)) <> 'array' or jsonb_array_length(coalesce(p_items, '[]'::jsonb)) > 50 then
+    raise exception 'Panier invalide.';
+  end if;
+  if length(coalesce(p_code, '')) > 40 then p_code := null; end if;
+
   if p_code is not null and btrim(p_code) <> '' then
     select * into v_code from public.promotions p
       where lower(p.code) = lower(btrim(p_code)) and public._promo_live(p)
@@ -387,9 +393,14 @@ begin
   if length(regexp_replace(v_phone, '\D', '', 'g')) < 9 then
     raise exception 'Numéro de téléphone invalide.';
   end if;
-  -- anti-spam simple : 5 commandes max par téléphone et par heure
-  if (select count(*) from public.orders where phone = v_phone and created_at > now() - interval '1 hour') >= 5 then
+  -- anti-spam : 5 commandes max par numéro et par heure, 20 par minute pour tout le site
+  if (select count(*) from public.orders
+      where regexp_replace(phone, '\D', '', 'g') = regexp_replace(v_phone, '\D', '', 'g')
+        and created_at > now() - interval '1 hour') >= 5 then
     raise exception 'Trop de commandes envoyées, merci de réessayer plus tard.';
+  end if;
+  if (select count(*) from public.orders where created_at > now() - interval '1 minute') >= 20 then
+    raise exception 'Trop de commandes en ce moment, merci de réessayer dans une minute.';
   end if;
 
   v_quote := public.quote_cart(p_items, p_code);
@@ -430,6 +441,10 @@ language plpgsql volatile security definer set search_path = public as $$
 begin
   if p_token is null or length(p_token) < 16 or length(p_token) > 64 then
     raise exception 'Jeton invalide';
+  end if;
+  -- anti-abus : 60 votes max par minute pour tout le site
+  if (select count(*) from public.flavor_votes where created_at > now() - interval '1 minute') >= 60 then
+    raise exception 'Trop de votes en ce moment, réessayez dans une minute.';
   end if;
   insert into public.flavor_votes (option_id, voter_token) values (p_option, p_token)
   on conflict (voter_token) do update set option_id = excluded.option_id, created_at = now();
