@@ -1,4 +1,5 @@
 import { shortDH } from './format'
+import { deliveryLine, totalIsFinal } from './delivery'
 
 export function waLink(number, text = '') {
   const n = String(number || '').replace(/\D/g, '')
@@ -32,12 +33,14 @@ export function buildOrderMessage(quote, customer, orderNumber) {
   }
   out.push('')
 
+  const mode = quote.delivery_mode || (Number(quote.delivery_fee) > 0 ? 'fixed' : 'on_confirm')
   const hasDiscount = quote.code?.status === 'ok' && Number(quote.discount) > 0
   const hasFee = Number(quote.delivery_fee) > 0
   if (hasDiscount || hasFee) out.push(`Sous-total : ${shortDH(quote.subtotal)}`)
   if (hasDiscount) out.push(`Code ${quote.code.code} (${quote.code.label}) : -${shortDH(quote.discount)}`)
-  out.push(`Livraison : ${hasFee ? shortDH(quote.delivery_fee) : 'à confirmer'}`)
-  out.push(`*Total : ${shortDH(quote.total)}*${hasFee ? '' : ' (hors livraison)'}`)
+  const fee = deliveryLine(mode, quote.delivery_fee)
+  out.push(`Livraison : ${/\d/.test(fee) ? fee : fee.toLowerCase()}`)
+  out.push(`*Total : ${shortDH(quote.total)}*${totalIsFinal(mode) ? '' : ' (hors livraison)'}`)
   out.push('')
 
   out.push('*LIVRAISON*')

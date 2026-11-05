@@ -4,6 +4,7 @@ import { formatDate, formatDH, orderRef } from '../lib/format'
 import { supabase } from '../lib/supabase'
 import { waLink } from '../lib/whatsapp'
 import { exportOrders } from './exportOrders'
+import { deliveryLine } from '../lib/delivery'
 
 export const STATUSES = [
   { value: 'nouvelle', label: 'Nouvelle', cls: 'bg-bordeaux text-white' },
@@ -175,7 +176,7 @@ export default function Orders() {
                       <dl className="mt-3 space-y-1 border-t border-line pt-3 text-[14px]">
                         <div className="flex justify-between"><dt>Sous-total</dt><dd>{formatDH(o.subtotal)}</dd></div>
                         {Number(o.discount) > 0 && <div className="flex justify-between text-bordeaux"><dt>Code {o.promo_code}</dt><dd>-{formatDH(o.discount)}</dd></div>}
-                        {Number(o.delivery_fee) > 0 && <div className="flex justify-between"><dt>Livraison</dt><dd>{formatDH(o.delivery_fee)}</dd></div>}
+                        <div className="flex justify-between"><dt>Livraison</dt><dd>{deliveryLine(o.delivery_mode || (Number(o.delivery_fee) > 0 ? 'fixed' : 'on_confirm'), o.delivery_fee)}</dd></div>
                         <div className="flex justify-between text-ink"><dt>Total</dt><dd>{formatDH(o.total)}</dd></div>
                       </dl>
                     </div>

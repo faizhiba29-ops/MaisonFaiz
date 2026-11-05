@@ -60,8 +60,17 @@ const SECTIONS = [
   {
     title: 'Livraison',
     fields: [
-      { key: 'delivery_fee', label: 'Frais de livraison ajoutés au total (DH)', type: 'number', help: '0 = frais confirmés sur WhatsApp.' },
-      { key: 'free_delivery_from', label: 'Livraison offerte dès (DH, optionnel)', type: 'number' },
+      {
+        key: 'delivery_mode', label: 'La livraison est…', type: 'select', full: true,
+        options: [
+          ['included', 'Incluse dans le prix (le total affiché est définitif)'],
+          ['fixed', 'En plus : frais fixes ajoutés au total'],
+          ['on_confirm', 'En plus : frais selon la ville, confirmés sur WhatsApp'],
+        ],
+        help: 'Appliqué au panier, au message WhatsApp et aux exports. Le total est toujours recalculé par le serveur.',
+      },
+      { key: 'delivery_fee', label: 'Frais de livraison (DH)', type: 'number', show: (v) => v.delivery_mode === 'fixed' },
+      { key: 'free_delivery_from', label: 'Livraison offerte dès (DH, optionnel)', type: 'number', show: (v) => v.delivery_mode === 'fixed' },
       { key: 'delivery_delay', label: 'Délai de livraison' },
       { key: 'delivery_info', label: 'Informations livraison', type: 'textarea', full: true },
     ],
@@ -121,6 +130,12 @@ export default function Settings() {
   const render = (f) => {
     const v = values[f.key]
     switch (f.type) {
+      case 'select':
+        return (
+          <select className="input" value={v ?? ''} onChange={(e) => set(f.key, e.target.value)}>
+            {f.options.map(([value, label]) => <option key={value} value={value}>{label}</option>)}
+          </select>
+        )
       case 'textarea':
         return <textarea className="input" rows={5} value={v ?? ''} onChange={(e) => set(f.key, e.target.value)} />
       case 'number':
@@ -167,7 +182,7 @@ export default function Settings() {
           <section key={s.title} className="bg-white p-4 md:p-6">
             <h2 className="mb-4 text-[20px]">{s.title}</h2>
             <div className="grid gap-5 md:grid-cols-2">
-              {s.fields.map((f) => (
+              {s.fields.filter((f) => !f.show || f.show(values)).map((f) => (
                 <FieldWrap key={f.key} label={f.label} help={f.help} full={f.full}>{render(f)}</FieldWrap>
               ))}
             </div>

@@ -83,6 +83,7 @@ Dans Supabase → **SQL Editor**, exécuter dans l'ordre :
 | `supabase/migrations/0003_store.sql` | Catégories, conservation par produit, pâtes à tartiner préparées (cachées) |
 | `supabase/migrations/0004_security.sql` | Durcissement : fonctions internes verrouillées, limites d'upload |
 | `supabase/migrations/0005_order_reference.sql` | Références de commande séquentielles `MF-AAAA-NNNN` |
+| `supabase/migrations/0006_delivery_mode.sql` | Mode de livraison : incluse, frais fixes ou à confirmer |
 
 ### 2. Compte administrateur
 
@@ -156,7 +157,7 @@ Voir [SECURITY.md](SECURITY.md) pour signaler une faille et la liste de contrôl
 | Packs | Produits inclus (avec leur format) et prix du pack |
 | Promotions | % ou montant fixe ; cible : tout le site, des produits ou des packs ; code optionnel ; dates ; limite d'utilisation ; texte de bannière |
 | Ingrédients, Recettes, Avis, FAQ, Vote | Contenu des pages publiques |
-| Paramètres | WhatsApp, Instagram, reels, textes de l'accueil, livraison, conservation |
+| Paramètres | WhatsApp (numéro qui reçoit les commandes), Instagram, reels, textes de l'accueil, livraison (incluse / frais fixes / à confirmer), conservation |
 
 **Préparer un produit avant sa sortie** : le créer avec *Visible* décoché. Cocher seulement *Visible* l'affiche en « Bientôt disponible » ; cocher aussi *Disponible* (avec un format en vente et un prix) l'ouvre à la commande.
 

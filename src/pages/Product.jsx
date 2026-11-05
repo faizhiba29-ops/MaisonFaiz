@@ -7,6 +7,7 @@ import { useCart } from '../context/Cart'
 import { useSettings, useSiteData } from '../context/SiteData'
 import { activeWeights, bulkSaving, formatDH, priceFor } from '../lib/format'
 import { displayPrice } from '../lib/pricing'
+import { deliveryPromise } from '../lib/delivery'
 import NotFound from './NotFound'
 
 function Gallery({ product }) {
@@ -113,7 +114,7 @@ function Product({ slug }) {
               ? <PriceTag price={dp.price} original={dp.original} className="!text-[18px]" />
               : <span className="price text-muted">Bientôt disponible</span>}
           </div>
-          <p className="mt-1 text-[13px] text-muted">Livraison partout au Maroc · commande confirmée sur WhatsApp</p>
+          <p className="mt-1 text-[13px] text-muted">{deliveryPromise(s)}</p>
 
           {weights.length > 0 && (
             <fieldset className="mt-7" disabled={!product.available}>
@@ -176,7 +177,7 @@ function Product({ slug }) {
               </Collapsible>
             )}
             <Collapsible title="Livraison">
-              <p>Livraison partout au Maroc{s.delivery_delay ? `, ${s.delivery_delay}` : ''}.</p>
+              <p>{deliveryPromise(s)}{s.delivery_delay ? ` · ${s.delivery_delay}` : ''}.</p>
               {s.delivery_info && <p className="mt-2">{s.delivery_info}</p>}
             </Collapsible>
             {conservation && (

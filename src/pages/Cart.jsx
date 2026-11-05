@@ -6,6 +6,7 @@ import Seo from '../components/Seo'
 import { useCart } from '../context/Cart'
 import { useSiteData } from '../context/SiteData'
 import { formatDH } from '../lib/format'
+import { deliveryLine, deliveryMode, totalIsFinal } from '../lib/delivery'
 import { supabase } from '../lib/supabase'
 import { buildOrderMessage, waLink } from '../lib/whatsapp'
 
@@ -226,11 +227,14 @@ export default function Cart() {
                   )}
                   <div className="flex justify-between">
                     <dt>Livraison</dt>
-                    <dd className="text-right text-[14px]">{quote && Number(quote.delivery_fee) > 0 ? <span className="price">{formatDH(quote.delivery_fee)}</span> : 'Confirmée sur WhatsApp'}</dd>
+                    <dd className="text-right text-[14px]">{quote ? deliveryLine(deliveryMode(settings, quote), quote.delivery_fee) : '…'}</dd>
                   </div>
                   <div className="flex justify-between border-t border-line pt-3 text-[17px] text-ink">
                     <dt>Total</dt><dd className="price !text-[17px]">{quote ? formatDH(quote.total) : '…'}</dd>
                   </div>
+                  {quote && !totalIsFinal(deliveryMode(settings, quote)) && (
+                    <p className="text-right text-[12px] text-muted">hors frais de livraison</p>
+                  )}
                 </dl>
                 {settings.delivery_info && <p className="mt-3 text-[13px] text-muted">{settings.delivery_info}</p>}
                 {quoteError && <p className="mt-3 text-[13px] text-bordeaux">Impossible de calculer le total pour le moment.</p>}
