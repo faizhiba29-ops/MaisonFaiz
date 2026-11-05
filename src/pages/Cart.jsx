@@ -135,8 +135,8 @@ export default function Cart() {
         <Seo title="Panier" />
         <div className="container-site text-center">
           <h1 className="section-title">Votre panier est vide</h1>
-          <p className="section-sub mt-2">Découvrez nos granolas faits maison.</p>
-          <Link to="/granolas" className="btn btn-primary">Voir les granolas</Link>
+          <p className="section-sub mt-2">Découvrez nos produits faits maison.</p>
+          <Link to="/boutique" className="btn btn-primary">Voir la boutique</Link>
         </div>
       </section>
     )
@@ -197,7 +197,7 @@ export default function Cart() {
                   </li>
                 ))}
               </ul>
-              <Link to="/granolas" className="link-underline mt-4 inline-block text-[14px] text-ink">← Continuer mes achats</Link>
+              <Link to="/boutique" className="link-underline mt-4 inline-block text-[14px] text-ink">← Continuer mes achats</Link>
             </div>
 
             {/* Récap + formulaire */}

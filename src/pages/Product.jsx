@@ -86,6 +86,12 @@ function Product({ slug }) {
   const canBuy = product.available && weight
   const others = products.filter((p) => p.id !== product.id).slice(0, 4)
 
+  // Texte propre au produit, sinon le texte général (pensé pour le granola et le sellou)
+  const conservation = product.conservation
+    || (['granola', 'sellou'].includes(product.category) && s.shelf_life_weeks
+      ? `À conserver dans un bocal hermétique, au sec et à l'abri de la chaleur. À consommer dans les ${s.shelf_life_weeks} semaines.`
+      : null)
+
   const addToCart = () => add({ type: 'product', id: product.id, weight, qty }, `${weight} ${product.name}`)
 
   return (
@@ -111,7 +117,7 @@ function Product({ slug }) {
 
           {weights.length > 0 && (
             <fieldset className="mt-7" disabled={!product.available}>
-              <legend className="mb-2 text-[14px] text-ink">Poids</legend>
+              <legend className="mb-2 text-[14px] text-ink">Format</legend>
               <div className="flex flex-wrap gap-2">
                 {weights.map((w) => (
                   <button key={w} type="button" onClick={() => setWeight(w)} aria-pressed={weight === w}
@@ -163,17 +169,19 @@ function Product({ slug }) {
                 {allergens.length > 0 && <p className="mt-2">Allergènes : {allergens.map((a) => a.name_fr.toLowerCase()).join(', ')}.</p>}
               </Collapsible>
             )}
-            <Collapsible title="Comment le déguster">
-              <p>Avec du lait froid, sur un yaourt, en smoothie bowl, sur des crêpes ou un msemen, ou simplement à la poignée.</p>
-              <Link to="/comment-le-deguster" className="mt-2 inline-block text-ink underline underline-offset-2">Voir les idées recettes</Link>
-            </Collapsible>
+            {product.category === 'granola' && (
+              <Collapsible title="Comment le déguster">
+                <p>Avec du lait froid, sur un yaourt, en smoothie bowl, sur des crêpes ou un msemen, ou simplement à la poignée.</p>
+                <Link to="/comment-le-deguster" className="mt-2 inline-block text-ink underline underline-offset-2">Voir les idées recettes</Link>
+              </Collapsible>
+            )}
             <Collapsible title="Livraison">
               <p>Livraison partout au Maroc{s.delivery_delay ? `, ${s.delivery_delay}` : ''}.</p>
               {s.delivery_info && <p className="mt-2">{s.delivery_info}</p>}
             </Collapsible>
-            {s.shelf_life_weeks && (
+            {conservation && (
               <Collapsible title="Conservation">
-                <p>À conserver dans un bocal hermétique, au sec et à l'abri de la chaleur. À consommer dans les {s.shelf_life_weeks} semaines.</p>
+                <p className="whitespace-pre-line">{conservation}</p>
               </Collapsible>
             )}
           </div>

@@ -13,17 +13,19 @@ export function SiteDataProvider({ children }) {
     packs: [],
     ingredients: [],
     promos: [],
+    categories: [],
   })
 
   const load = useCallback(async () => {
-    const [settings, products, packs, ingredients, promos] = await Promise.all([
+    const [settings, products, packs, ingredients, promos, categories] = await Promise.all([
       supabase.from('settings').select('key,value'),
       supabase.from('products').select('*').order('sort_order').order('created_at'),
       supabase.from('packs').select('*').order('sort_order').order('created_at'),
       supabase.from('ingredients').select('*').order('sort_order').order('name_fr'),
       supabase.rpc('active_promotions'),
+      supabase.from('categories').select('*').order('sort_order').order('name'),
     ])
-    const error = [settings, products, packs, ingredients, promos].find((r) => r.error)?.error
+    const error = [settings, products, packs, ingredients, promos, categories].find((r) => r.error)?.error
     setState({
       loading: false,
       error,
@@ -32,6 +34,8 @@ export function SiteDataProvider({ children }) {
       packs: packs.data || [],
       ingredients: ingredients.data || [],
       promos: promos.data || [],
+      // Seules les catégories qui contiennent au moins un produit visible apparaissent dans la boutique
+      categories: (categories.data || []).filter((c) => (products.data || []).some((p) => p.category === c.slug)),
     })
   }, [])
 

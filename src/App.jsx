@@ -1,5 +1,5 @@
 import { lazy, Suspense } from 'react'
-import { BrowserRouter, Route, Routes } from 'react-router'
+import { BrowserRouter, Navigate, Route, Routes } from 'react-router'
 import Layout, { Loading } from './components/Layout'
 import { CartProvider } from './context/Cart'
 import { SiteDataProvider } from './context/SiteData'
@@ -67,7 +67,9 @@ export default function App() {
             }
           >
             <Route index element={<Home />} />
-            <Route path="granolas" element={<Shop />} />
+            <Route path="boutique" element={<Shop />} />
+            <Route path="boutique/:category" element={<Shop />} />
+            <Route path="granolas" element={<Navigate to="/boutique/granola" replace />} />
             <Route path="produits/:slug" element={<Product />} />
             <Route path="bienfaits" element={<Benefits />} />
             <Route path="comment-le-deguster" element={<Recipes />} />

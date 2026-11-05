@@ -48,7 +48,7 @@ function Hero() {
       </h1>
       {s.hero_subtitle && <p className={`mx-auto mt-3 max-w-[440px] md:mx-0 ${dark ? '' : 'text-white/90'}`}>{s.hero_subtitle}</p>}
       <div className="mt-7 flex flex-col gap-3 sm:flex-row sm:justify-center md:justify-start">
-        <Link to="/granolas" className={`btn ${dark ? 'btn-primary' : 'btn-ghost-white'}`}>Voir les granolas</Link>
+        <Link to="/boutique" className={`btn ${dark ? 'btn-primary' : 'btn-ghost-white'}`}>Découvrir la boutique</Link>
         <a href={waLink(s.whatsapp_number, 'Salam Hiba, je voudrais commander du granola.')} target="_blank" rel="noreferrer"
           className={`btn ${dark ? 'btn-outline' : 'btn-ghost-white'}`}>
           Commander sur WhatsApp
@@ -100,7 +100,7 @@ function Collection({ products }) {
   return (
     <section className="section">
       <div className="container-site">
-        <SectionHead title="Nos granolas" link="/granolas" linkLabel="Tout voir" />
+        <SectionHead title="Nos produits" link="/boutique" linkLabel="Tout voir" />
         <div className={`no-scrollbar -mx-4 flex snap-x snap-mandatory scroll-px-4 gap-2 overflow-x-auto px-4 md:mx-0 md:grid md:overflow-visible md:px-0 ${gridColsClass(products.length)}`}>
           {products.map((p, i) => (
             <div key={p.id} className="w-[44%] shrink-0 snap-start md:w-auto">
@@ -109,7 +109,7 @@ function Collection({ products }) {
           ))}
         </div>
         <div className="mt-6 text-center md:hidden">
-          <Link to="/granolas" className="btn btn-outline w-full">Tout voir</Link>
+          <Link to="/boutique" className="btn btn-outline w-full">Tout voir</Link>
         </div>
       </div>
     </section>

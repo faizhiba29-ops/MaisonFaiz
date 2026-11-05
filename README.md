@@ -14,6 +14,7 @@ Site vitrine + panier + commande WhatsApp pour **Maison Faiz foods** (Fès), la 
 2. **SQL Editor** → coller et exécuter, dans l'ordre :
    1. `supabase/migrations/0001_schema.sql` (tables, sécurité RLS, fonctions de prix, bucket `images`)
    2. `supabase/migrations/0002_seed.sql` (produits, prix, Pack Duo, ingrédients, recettes, FAQ, vote, paramètres)
+   3. `supabase/migrations/0003_store.sql` (catégories de la boutique, conservation par produit, pâtes à tartiner préparées et cachées)
 3. **Créer le compte admin (unique)** :
    - *Authentication → Users → Add user* : email + mot de passe de Hiba (cocher « Auto confirm »).
    - Puis dans le SQL Editor :

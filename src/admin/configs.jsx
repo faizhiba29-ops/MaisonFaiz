@@ -1,5 +1,5 @@
 import { Stars } from '../components/Icons'
-import { formatDate, formatDH, WEIGHTS } from '../lib/format'
+import { formatDate, formatDH, formatsOf } from '../lib/format'
 import { THEME_OPTIONS } from '../lib/themes'
 import { Thumb, YesNo } from './CrudPage'
 
@@ -12,16 +12,19 @@ export const products = {
   folder: 'products',
   slugFrom: 'name',
   order: [['sort_order', true], ['created_at', true]],
-  lookups: { ingredients: { table: 'ingredients', label: (r) => `${r.icon || ''} ${r.name_fr}`, order: 'sort_order' } },
+  lookups: {
+    ingredients: { table: 'ingredients', label: (r) => `${r.icon || ''} ${r.name_fr}`, order: 'sort_order' },
+    categories: { table: 'categories', label: 'name', value: 'slug', order: 'sort_order' },
+  },
   defaults: {
-    name: '', slug: '', name_ar: '', description: '', category: 'granola', images: [],
-    prices: { '250g': { price: 55, on: true }, '500g': { price: 110, on: true }, '1kg': { price: 200, on: true } },
+    name: '', slug: '', name_ar: '', description: '', category: 'granola', images: [], conservation: '',
+    prices: { '250g': { price: 55, on: true, sort: 0 }, '500g': { price: 110, on: true, sort: 1 }, '1kg': { price: 200, on: true, sort: 2 } },
     ingredient_ids: [], is_new: false, is_bestseller: false, available: true, visible: true,
     sort_order: 0, theme: 'kraft', overlay_text: '', taste: '', main_ingredients: '', best_moment: '',
   },
   columns: [
-    { label: 'Produit', render: (r) => <div className="flex items-center gap-3"><Thumb src={r.images?.[0]} /><div><p className="text-ink">{r.name}</p><p className="text-[12px] text-muted">{r.category} · /{r.slug}</p></div></div> },
-    { label: 'Prix', render: (r) => <span className="text-[13px]">{WEIGHTS.filter((w) => r.prices?.[w]?.on).map((w) => `${w} ${r.prices[w].price} DH`).join(' · ') || '—'}</span> },
+    { label: 'Produit', render: (r, ctx) => <div className="flex items-center gap-3"><Thumb src={r.images?.[0]} /><div><p className="text-ink">{r.name}</p><p className="text-[12px] text-muted">{ctx.options.categories?.find((c) => c.value === r.category)?.label || r.category} · /{r.slug}</p></div></div> },
+    { label: 'Prix', render: (r) => <span className="text-[13px]">{formatsOf(r).filter((f) => f.on && f.price).map((f) => `${f.label} ${f.price} DH`).join(' · ') || 'Prix à définir'}</span> },
     { label: 'Badges', render: (r) => <span className="text-[13px]">{[r.is_new && 'Nouveau', r.is_bestseller && 'Best-seller'].filter(Boolean).join(', ') || '—'}</span> },
     { label: 'Dispo', render: (r, ctx) => <YesNo row={r} col="available" ctx={ctx} /> },
     { label: 'Visible', render: (r, ctx) => <YesNo row={r} col="visible" ctx={ctx} /> },
@@ -30,23 +33,60 @@ export const products = {
     { name: 'name', label: 'Nom', required: true },
     { name: 'slug', label: 'Slug (URL)', help: 'Généré automatiquement depuis le nom. Ex. granola-chocolat' },
     { name: 'name_ar', label: 'Nom en arabe', dir: 'rtl' },
-    { name: 'category', label: 'Catégorie', type: 'select', options: [{ value: 'granola', label: 'Granola' }, { value: 'sellou', label: 'Sellou' }, { value: 'autre', label: 'Autre' }] },
+    { name: 'category', label: 'Catégorie', type: 'select', optionsKey: 'categories', help: 'Les catégories se gèrent dans Catalogue → Catégories.' },
     { name: 'description', label: 'Description', type: 'textarea', full: true },
     { name: 'images', label: 'Photos', type: 'images', full: true, help: 'La 1re photo est la principale ; la 2e apparaît au survol. Format carré conseillé.' },
-    { name: 'prices', label: 'Prix par poids', type: 'prices', full: true },
+    { name: 'prices', label: 'Formats et prix', type: 'prices', full: true, help: 'Ex. 250g / 500g / 1kg, ou « Pot 250g ». Mettez un poids dans le libellé (250g, 1kg) pour afficher l’économie sur le grand format.' },
     { name: 'ingredient_ids', label: 'Ingrédients', type: 'multiselect', optionsKey: 'ingredients', full: true },
-    { name: 'is_new', label: 'Badge « Nouveau » (Jdid ✨)', type: 'checkbox' },
+    { name: 'is_new', label: 'Badge « Nouveau »', type: 'checkbox' },
     { name: 'is_bestseller', label: 'Badge « Best-seller »', type: 'checkbox' },
     { name: 'available', label: 'Disponible (sinon « Bientôt disponible »)', type: 'checkbox' },
-    { name: 'visible', label: 'Visible sur le site', type: 'checkbox' },
+    { name: 'visible', label: 'Visible sur le site', type: 'checkbox', help: 'Décoché = produit préparé mais caché aux clients.' },
     { name: 'sort_order', label: "Ordre d'affichage", type: 'number', step: 1 },
     { name: 'theme', label: 'Couleur de fond du visuel', type: 'select', options: THEME_OPTIONS },
     { name: 'overlay_text', label: 'Texte incrusté sur la photo', placeholder: '100% FAIT MAISON', full: true },
     { name: 'taste', label: 'Comparaison — goût' },
     { name: 'main_ingredients', label: 'Comparaison — ingrédients principaux' },
     { name: 'best_moment', label: 'Comparaison — moment idéal', full: true },
+    { name: 'conservation', label: 'Conservation (optionnel)', type: 'textarea', rows: 2, full: true, help: 'Laissez vide pour les granolas : le texte des Paramètres est utilisé.' },
   ],
-  validate: (r) => (WEIGHTS.some((w) => r.prices?.[w]?.on && r.prices[w].price > 0) ? null : 'Activez au moins un poids avec un prix.'),
+  // Le formulaire manipule une liste ordonnée ; la base garde un objet { libellé: { price, on, sort } }
+  load: (r) => ({ ...r, prices: formatsOf(r).map(({ label, price, on }) => ({ label, price, on })) }),
+  validate: (r) => {
+    const list = (r.prices || []).filter((f) => f.label?.trim() || f.price != null)
+    if (list.some((f) => !f.label?.trim())) return 'Chaque format doit avoir un nom (ex. 250g).'
+    const labels = list.map((f) => f.label.trim().toLowerCase())
+    if (new Set(labels).size !== labels.length) return 'Deux formats portent le même nom.'
+    if (r.visible && r.available && !list.some((f) => f.on && f.price > 0)) return 'Un produit visible et disponible doit avoir au moins un format en vente avec un prix.'
+    return null
+  },
+  prepare: (r) => ({
+    ...r,
+    conservation: r.conservation?.trim() || null,
+    prices: Object.fromEntries((r.prices || []).filter((f) => f.label?.trim()).map((f, i) => [f.label.trim(), { price: f.price, on: Boolean(f.on), sort: i }])),
+  }),
+}
+
+export const categories = {
+  table: 'categories',
+  title: 'Catégories',
+  singular: 'catégorie',
+  folder: 'categories',
+  slugFrom: 'name',
+  order: [['sort_order', true], ['name', true]],
+  intro: "Une catégorie apparaît dans la boutique (onglet et page) dès qu'elle contient au moins un produit visible.",
+  defaults: { name: '', slug: '', description: '', sort_order: 0 },
+  columns: [
+    { label: 'Catégorie', render: (r) => <div><p className="text-ink">{r.name}</p><p className="text-[12px] text-muted">/boutique/{r.slug}</p></div> },
+    { label: 'Description', render: (r) => <span className="line-clamp-2 max-w-[420px] text-[13px]">{r.description || '—'}</span> },
+    { label: 'Ordre', render: (r) => r.sort_order },
+  ],
+  fields: [
+    { name: 'name', label: 'Nom', required: true, placeholder: 'Pâtes à tartiner' },
+    { name: 'slug', label: 'Slug (URL)', help: 'Ne le changez plus une fois la page partagée.' },
+    { name: 'description', label: "Phrase d'introduction", type: 'textarea', rows: 2, full: true },
+    { name: 'sort_order', label: "Ordre d'affichage", type: 'number', step: 1 },
+  ],
 }
 
 export const packs = {
@@ -73,7 +113,7 @@ export const packs = {
     { name: 'price', label: 'Prix du pack (DH)', type: 'number', required: true, min: 0 },
     { name: 'theme', label: 'Couleur de fond', type: 'select', options: THEME_OPTIONS },
     { name: 'available', label: 'Disponible', type: 'checkbox' },
-    { name: 'visible', label: 'Visible sur le site', type: 'checkbox' },
+    { name: 'visible', label: 'Visible sur le site', type: 'checkbox', help: 'Décoché = produit préparé mais caché aux clients.' },
     { name: 'sort_order', label: "Ordre d'affichage", type: 'number', step: 1 },
   ],
   prepare: (r) => ({ ...r, items: (r.items || []).filter((it) => it.product_id) }),

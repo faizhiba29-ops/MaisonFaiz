@@ -8,7 +8,7 @@ import { ProductVisual } from './Product'
 
 const NAV = [
   { to: '/', label: 'Accueil', end: true },
-  { to: '/granolas', label: 'Nos granolas' },
+  { to: '/boutique', label: 'Boutique' },
   { to: '/bienfaits', label: 'Bienfaits' },
   { to: '/comment-le-deguster', label: 'Comment le déguster' },
   { to: '/contact', label: 'Contact' },
@@ -167,7 +167,7 @@ function Footer() {
         <div>
           <h4 className="eyebrow mb-4 font-sans">La boutique</h4>
           <ul className="space-y-2 text-sm">
-            <li><Link to="/granolas" className="link-underline">Nos granolas</Link></li>
+            <li><Link to="/boutique" className="link-underline">Boutique</Link></li>
             <li><Link to="/bienfaits" className="link-underline">Les bienfaits</Link></li>
             <li><Link to="/comment-le-deguster" className="link-underline">Comment le déguster</Link></li>
             <li><Link to="/faq" className="link-underline">FAQ</Link></li>

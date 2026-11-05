@@ -12,7 +12,7 @@ const ART = { bag: BagArt, jar: JarArt, bowl: BowlArt, duo: DuoArt }
  * Visuel carré : photo uploadée, ou illustration sur fond coloré (aplat ou coupe en diagonale).
  * `hoverImage` : 2e photo qui apparaît au survol (desktop).
  */
-export function Visual({ image, hoverImage, themeName, name, art = 'bag', overlay, split = true, choco, eager, className = '', children }) {
+export function Visual({ image, hoverImage, themeName, name, art = 'bag', artTitle, overlay, split = true, choco, eager, className = '', children }) {
   const t = theme(themeName)
   const Art = ART[art] || BagArt
   const bg = split ? `linear-gradient(135deg, ${t.a} 0 58%, ${t.b} 58% 100%)` : t.a
@@ -34,7 +34,7 @@ export function Visual({ image, hoverImage, themeName, name, art = 'bag', overla
         </>
       ) : (
         <div className="absolute inset-[8%] transition-transform duration-700 group-hover/visual:scale-105">
-          <Art name={name} seed={name} choco={choco} />
+          <Art name={name} seed={name} choco={choco} title={artTitle} />
         </div>
       )}
       {/* Texte incrusté seulement sur les illustrations : les vraies photos portent déjà l'étiquette du produit */}
@@ -81,7 +81,8 @@ export function PriceTag({ price, original, className = '', prefix }) {
   )
 }
 
-const productArt = (p) => (p.category === 'sellou' ? 'bowl' : p.sort_order % 2 === 0 ? 'jar' : 'bag')
+const productArt = (p) => (p.category === 'sellou' ? 'bowl' : p.category === 'pates-a-tartiner' || p.sort_order % 2 === 0 ? 'jar' : 'bag')
+const ART_TITLES = { granola: 'Granola', sellou: 'Sellou', 'pates-a-tartiner': 'Pâte à tartiner' }
 const isChoco = (p) => /chocolat|ferrero/i.test(p.name)
 
 export function ProductVisual({ product, eager, overlay = true, index = 0 }) {
@@ -92,6 +93,7 @@ export function ProductVisual({ product, eager, overlay = true, index = 0 }) {
       themeName={product.theme}
       name={product.name}
       art={productArt(product)}
+      artTitle={ART_TITLES[product.category] || 'Maison Faiz'}
       overlay={overlay ? product.overlay_text : null}
       split={index % 3 !== 1}
       choco={isChoco(product)}

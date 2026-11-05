@@ -65,3 +65,4 @@ export const GearIcon = make(<><circle cx="12" cy="12" r="3" /><path d="M12 2v3M
 export const ExternalIcon = make(<><path d="M14 4h6v6M20 4l-9 9" /><path d="M18 14v6H4V6h6" /></>)
 export const LogoutIcon = make(<><path d="M15 4h4v16h-4" /><path d="M10 8l-4 4 4 4M6 12h10" /></>)
 export const ArrowUpRight = make(<path d="M7 17 17 7M8 7h9v9" />)
+export const FolderIcon = make(<path d="M3 6h6l2 2h10v11H3V6Z" />)

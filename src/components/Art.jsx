@@ -43,7 +43,7 @@ const ZIGZAG = `M108 92 ${Array.from({ length: 23 }, (_, i) => `L${116 + i * 8} 
 
 const shortName =(name) => name.replace(/^(granola|pack)\s*/i, '').toUpperCase() || 'CLASSIC'
 
-export function BagArt({ name = 'Granola', seed = name, choco }) {
+export function BagArt({ name = 'Granola', seed = name, choco, title = 'Granola' }) {
   const id = `w-${seed.replace(/\W/g, '')}`
   return (
     <svg viewBox="0 0 400 400" className="h-full w-full" role="img" aria-label={name}>
@@ -52,7 +52,7 @@ export function BagArt({ name = 'Granola', seed = name, choco }) {
       <path d="M108 92 L292 92 L293 118 L107 118 Z" fill="#B88F5E" />
       <path d={ZIGZAG} fill="#B88F5E" />
       <rect x="140" y="146" width="120" height="90" fill="#FBF7F1" />
-      <text x="200" y="178" textAnchor="middle" fontFamily="Cardo, serif" fontSize="16" fill="#6B2D3C">Granola</text>
+      <text x="200" y="178" textAnchor="middle" fontFamily="Cardo, serif" fontSize={title.length > 9 ? 12 : 16} fill="#6B2D3C">{title}</text>
       <text x="200" y="195" textAnchor="middle" fontFamily="Cardo, serif" fontSize="11" fontStyle="italic" fill="#6B2D3C">Maison Faiz</text>
       <line x1="170" y1="206" x2="230" y2="206" stroke="#6B2D3C" strokeWidth=".8" />
       <text x="200" y="223" textAnchor="middle" fontFamily="Archivo, sans-serif" fontSize="9" letterSpacing="1.5" fill="#4A2C20">
@@ -65,7 +65,7 @@ export function BagArt({ name = 'Granola', seed = name, choco }) {
   )
 }
 
-export function JarArt({ name = 'Granola', seed = name, choco }) {
+export function JarArt({ name = 'Granola', seed = name, choco, title = 'Granola' }) {
   const id = `j-${seed.replace(/\W/g, '')}`
   return (
     <svg viewBox="0 0 400 400" className="h-full w-full" role="img" aria-label={name}>
@@ -79,7 +79,7 @@ export function JarArt({ name = 'Granola', seed = name, choco }) {
         <Clusters seed={seed} cx={200} cy={250} rx={110} ry={120} count={170} choco={choco} />
       </g>
       <rect x="150" y="200" width="100" height="60" fill="#FBF7F1" />
-      <text x="200" y="226" textAnchor="middle" fontFamily="Cardo, serif" fontSize="14" fill="#6B2D3C">Granola</text>
+      <text x="200" y="226" textAnchor="middle" fontFamily="Cardo, serif" fontSize={title.length > 9 ? 11 : 14} fill="#6B2D3C">{title}</text>
       <text x="200" y="243" textAnchor="middle" fontFamily="Cardo, serif" fontSize="10" fontStyle="italic" fill="#6B2D3C">Maison Faiz</text>
       <path d="M134 130 Q130 230 136 330" stroke="rgba(255,255,255,.7)" strokeWidth="6" fill="none" strokeLinecap="round" />
     </svg>

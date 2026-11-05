@@ -1,39 +1,37 @@
-import { useState } from 'react'
+import { Link, useParams } from 'react-router'
 import { PackCard, ProductCard } from '../components/Product'
 import Seo from '../components/Seo'
 import { useSiteData } from '../context/SiteData'
 import { gridColsClass } from '../lib/format'
+import NotFound from './NotFound'
 
-const TABS = [
-  ['all', 'Tout'],
-  ['granola', 'Granolas'],
-  ['sellou', 'Sellou'],
-  ['autre', 'Autres'],
-]
-
+// /boutique (tout) et /boutique/:category (une catégorie)
 export default function Shop() {
-  const { products, packs } = useSiteData()
-  const [tab, setTab] = useState('all')
-  const tabs = TABS.filter(([k]) => k === 'all' || products.some((p) => p.category === k))
-  const list = tab === 'all' ? products : products.filter((p) => p.category === tab)
+  const { category } = useParams()
+  const { products, packs, categories } = useSiteData()
+  const current = category ? categories.find((c) => c.slug === category) : null
+  if (category && !current) return <NotFound />
+
+  const list = current ? products.filter((p) => p.category === current.slug) : products
+  const title = current ? current.name : 'La boutique'
+  const intro = current ? current.description : 'Granolas, sellou et créations maison, préparés à la main à Fès.'
+  const tabCls = (active) => `link-underline whitespace-nowrap py-1 ${active ? 'active text-bordeaux' : 'text-ink'}`
 
   return (
     <>
-      <Seo title="Nos granolas" description="Granola Classic, Chocolat, Ferrero Rocher, Lite, Sellou et packs : tous faits maison à Fès. 250g, 500g ou 1kg, livraison partout au Maroc." />
+      <Seo title={title} description={`${intro || title} Livraison partout au Maroc, commande sur WhatsApp.`} />
       <section className="section pb-0">
         <div className="container-site">
-          <h1 className="h2">Nos granolas</h1>
-          <p className="mt-2">En 250g, 500g ou 1kg. Préparés à la main en petites fournées.</p>
+          <h1 className="h2">{title}</h1>
+          {intro && <p className="mt-2">{intro}</p>}
           <div className="mb-6 mt-8 flex items-center justify-between gap-6 border-b border-line pb-3">
-            {tabs.length > 2 ? (
-            <div className="no-scrollbar flex gap-6 overflow-x-auto text-[15px]">
-              {tabs.map(([k, label]) => (
-                <button key={k} onClick={() => setTab(k)}
-                  className={`link-underline whitespace-nowrap py-1 ${tab === k ? 'active text-bordeaux' : 'text-ink'}`}>
-                  {label}
-                </button>
-              ))}
-            </div>
+            {categories.length > 1 ? (
+              <nav className="no-scrollbar flex gap-6 overflow-x-auto text-[15px]" aria-label="Catégories">
+                <Link to="/boutique" className={tabCls(!current)}>Tout</Link>
+                {categories.map((c) => (
+                  <Link key={c.slug} to={`/boutique/${c.slug}`} className={tabCls(current?.slug === c.slug)}>{c.name}</Link>
+                ))}
+              </nav>
             ) : <span />}
             <span className="shrink-0 text-[14px] text-muted">{list.length} produit{list.length > 1 ? 's' : ''}</span>
           </div>
@@ -42,7 +40,7 @@ export default function Shop() {
           </div>
         </div>
       </section>
-      {packs.length > 0 && (tab === 'all') && (
+      {packs.length > 0 && !current && (
         <section className="section">
           <div className="container-site">
             <h2 className="h2">Nos packs</h2>

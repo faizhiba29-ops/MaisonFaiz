@@ -16,6 +16,7 @@ import { Field } from './fields'
  *   slugFrom: 'name',                             // génère le slug automatiquement
  *   validate(row) → message | null,
  *   prepare(row) → row,                           // nettoyage avant enregistrement
+ *   load(row) → row,                              // mise en forme pour le formulaire (inverse de prepare)
  * }
  */
 export default function CrudPage({ config }) {
@@ -49,7 +50,8 @@ export default function CrudPage({ config }) {
 
   const startNew = () => {
     const nextOrder = rows?.length ? Math.max(...rows.map((r) => r.sort_order || 0)) + 1 : 1
-    setEditing({ ...structuredClone(defaults), ...('sort_order' in defaults ? { sort_order: nextOrder } : {}) })
+    const row = { ...structuredClone(defaults), ...('sort_order' in defaults ? { sort_order: nextOrder } : {}) }
+    setEditing(config.load ? config.load(row) : row)
     setError(null)
   }
 
@@ -162,7 +164,7 @@ export default function CrudPage({ config }) {
                     </td>
                   ))}
                   <td className="ml-auto whitespace-nowrap md:px-4 md:py-3 md:text-right">
-                    <button className="mr-4 text-ink underline" onClick={() => { setEditing(structuredClone(row)); setError(null) }}>Modifier</button>
+                    <button className="mr-4 text-ink underline" onClick={() => { const r = structuredClone(row); setEditing(config.load ? config.load(r) : r); setError(null) }}>Modifier</button>
                     <button className="text-bordeaux underline" onClick={() => remove(row)}>Supprimer</button>
                   </td>
                 </tr>

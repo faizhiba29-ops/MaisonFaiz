@@ -8,6 +8,7 @@ import Votes from './Votes'
 
 const crud = {
   produits: configs.products,
+  categories: configs.categories,
   packs: configs.packs,
   promotions: configs.promotions,
   ingredients: configs.ingredients,

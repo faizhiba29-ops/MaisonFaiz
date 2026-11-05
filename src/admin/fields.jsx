@@ -1,6 +1,6 @@
 import { useState } from 'react'
 import { CloseIcon, PlusIcon } from '../components/Icons'
-import { WEIGHTS } from '../lib/format'
+import { activeWeights, formatsOf } from '../lib/format'
 import { uploadImage } from '../lib/images'
 
 export function FieldWrap({ label, help, children, full }) {
@@ -142,22 +142,37 @@ export function MultiSelect({ value = [], onChange, options }) {
   )
 }
 
-/** Prix par poids, chaque poids activable */
-export function PricesInput({ value = {}, onChange }) {
-  const v = value || {}
-  const set = (w, patch) => onChange({ ...v, [w]: { price: v[w]?.price ?? '', on: v[w]?.on ?? false, ...patch } })
+/** Formats d'un produit : [{ label, price, on }] (l'ordre de la liste = l'ordre sur le site) */
+export function PricesInput({ value = [], onChange }) {
+  const list = Array.isArray(value) ? value : []
+  const set = (i, patch) => onChange(list.map((f, k) => (k === i ? { ...f, ...patch } : f)))
+  const move = (i, d) => {
+    const next = [...list]
+    ;[next[i], next[i + d]] = [next[i + d], next[i]]
+    onChange(next)
+  }
   return (
-    <div className="grid gap-2 sm:grid-cols-3">
-      {WEIGHTS.map((w) => (
-        <div key={w} className={`border p-3 ${v[w]?.on ? 'border-ink' : 'border-line opacity-70'}`}>
-          <Toggle checked={v[w]?.on} onChange={(on) => set(w, { on })} label={w} />
+    <div className="space-y-2">
+      {list.map((f, i) => (
+        <div key={i} className={`flex flex-wrap items-center gap-2 rounded-lg border p-2 ${f.on ? 'border-ink/30' : 'border-line opacity-70'}`}>
+          <input className="input w-36" placeholder="250g, Pot 250g…" value={f.label} aria-label="Format"
+            onChange={(e) => set(i, { label: e.target.value })} />
           <div className="flex items-center gap-2">
-            <input type="number" min="0" step="0.5" className="input" value={v[w]?.price ?? ''}
-              onChange={(e) => set(w, { price: e.target.value === '' ? null : Number(e.target.value) })} />
+            <input type="number" min="0" step="0.5" className="input w-28" placeholder="Prix" value={f.price ?? ''} aria-label="Prix"
+              onChange={(e) => set(i, { price: e.target.value === '' ? null : Number(e.target.value) })} />
             <span className="text-[13px]">DH</span>
           </div>
+          <Toggle checked={f.on} onChange={(on) => set(i, { on })} label="En vente" />
+          <span className="ml-auto flex items-center gap-1 text-[13px]">
+            <button type="button" disabled={i === 0} onClick={() => move(i, -1)} className="px-2 disabled:opacity-30" aria-label="Monter">↑</button>
+            <button type="button" disabled={i === list.length - 1} onClick={() => move(i, 1)} className="px-2 disabled:opacity-30" aria-label="Descendre">↓</button>
+            <button type="button" onClick={() => onChange(list.filter((_, k) => k !== i))} className="px-1 text-bordeaux" aria-label="Supprimer"><CloseIcon width={18} height={18} /></button>
+          </span>
         </div>
       ))}
+      <button type="button" className="text-[13px] text-ink underline" onClick={() => onChange([...list, { label: '', price: null, on: true }])}>
+        + Ajouter un format
+      </button>
     </div>
   )
 }
@@ -170,17 +185,18 @@ export function PackItemsInput({ value = [], onChange, products }) {
     <div className="space-y-2">
       {list.map((it, i) => (
         <div key={i} className="flex gap-2">
-          <select className="input" value={it.product_id || ''} onChange={(e) => set(i, { product_id: e.target.value })}>
+          <select className="input" value={it.product_id || ''} onChange={(e) => set(i, { product_id: e.target.value, weight: activeWeights(products.find((p) => p.value === e.target.value)?.row)[0] || '' })}>
             <option value="">— Produit —</option>
             {products.map((p) => <option key={p.value} value={p.value}>{p.label}</option>)}
           </select>
-          <select className="input w-28" value={it.weight || '250g'} onChange={(e) => set(i, { weight: e.target.value })}>
-            {WEIGHTS.map((w) => <option key={w}>{w}</option>)}
+          <select className="input w-36" value={it.weight || ''} onChange={(e) => set(i, { weight: e.target.value })}>
+            <option value="">— Format —</option>
+            {formatsOf(products.find((p) => p.value === it.product_id)?.row).map((f) => <option key={f.label}>{f.label}</option>)}
           </select>
           <button type="button" className="px-2 text-bordeaux" onClick={() => onChange(list.filter((_, k) => k !== i))} aria-label="Retirer"><CloseIcon /></button>
         </div>
       ))}
-      <button type="button" className="text-[13px] text-ink underline" onClick={() => onChange([...list, { product_id: '', weight: '250g' }])}>
+      <button type="button" className="text-[13px] text-ink underline" onClick={() => onChange([...list, { product_id: '', weight: '' }])}>
         + Ajouter un produit
       </button>
     </div>

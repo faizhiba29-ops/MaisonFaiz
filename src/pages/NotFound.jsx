@@ -9,7 +9,7 @@ export default function NotFound() {
         <p className="font-serif text-[64px] text-bordeaux">404</p>
         <h1 className="text-[28px]">Cette page est introuvable</h1>
         <p className="mt-2 text-muted">Elle n'existe pas ou plus.</p>
-        <Link to="/granolas" className="btn btn-primary mt-8">Voir les granolas</Link>
+        <Link to="/boutique" className="btn btn-primary mt-8">Voir la boutique</Link>
       </div>
     </section>
   )
