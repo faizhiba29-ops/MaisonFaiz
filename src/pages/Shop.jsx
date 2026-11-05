@@ -2,7 +2,6 @@ import { Link, useParams } from 'react-router'
 import { PackCard, ProductCard } from '../components/Product'
 import Seo from '../components/Seo'
 import { useSiteData } from '../context/SiteData'
-import { gridColsClass } from '../lib/format'
 import NotFound from './NotFound'
 
 // /boutique (tout) et /boutique/:category (une catégorie)
@@ -35,7 +34,7 @@ export default function Shop() {
             ) : <span />}
             <span className="shrink-0 text-[14px] text-muted">{list.length} produit{list.length > 1 ? 's' : ''}</span>
           </div>
-          <div className={`grid grid-cols-2 gap-2 ${gridColsClass(list.length)}`}>
+          <div className="grid grid-cols-2 gap-2 md:grid-cols-3 lg:grid-cols-4">
             {list.map((p, i) => <ProductCard key={p.id} product={p} index={i} />)}
           </div>
         </div>
@@ -45,7 +44,7 @@ export default function Shop() {
           <div className="container-site">
             <h2 className="h2">Nos packs</h2>
             <p className="mb-7 mt-2">Pour goûter plusieurs saveurs ou faire plaisir.</p>
-            <div className={`grid grid-cols-2 gap-2 ${gridColsClass(list.length)}`}>
+            <div className="grid grid-cols-2 gap-2 md:grid-cols-3 lg:grid-cols-4">
               {packs.map((p, i) => <PackCard key={p.id} pack={p} index={i} />)}
             </div>
           </div>
