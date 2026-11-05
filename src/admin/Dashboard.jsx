@@ -217,7 +217,7 @@ export default function Dashboard() {
               </button>
             ))}
           </div>
-          <Link to="/admin/produits" className="btn btn-outline bg-white">Produits</Link>
+          <Link to="/admin/produits" className="btn btn-outline bg-white hover:bg-ink">Produits</Link>
           <Link to="/admin/promotions" className="btn btn-bordeaux">Créer une promo</Link>
         </div>
       </div>

@@ -1,8 +1,9 @@
-import { useCallback, useEffect, useState } from 'react'
+import { useCallback, useEffect, useMemo, useState } from 'react'
 import { WhatsAppIcon } from '../components/Icons'
 import { formatDate, formatDH } from '../lib/format'
 import { supabase } from '../lib/supabase'
 import { waLink } from '../lib/whatsapp'
+import { exportOrders } from './exportOrders'
 
 export const STATUSES = [
   { value: 'nouvelle', label: 'Nouvelle', cls: 'bg-bordeaux text-white' },
@@ -27,6 +28,8 @@ export default function Orders() {
   const [filter, setFilter] = useState('all')
   const [open, setOpen] = useState(null)
   const [error, setError] = useState(null)
+  const [selected, setSelected] = useState(() => new Set())
+  const [busy, setBusy] = useState(null)
 
   const load = useCallback(async () => {
     let q = supabase.from('orders').select('*').order('created_at', { ascending: false }).limit(500)
@@ -39,6 +42,44 @@ export default function Orders() {
   useEffect(() => {
     load()
   }, [load])
+
+  // La sélection suit le filtre : on ne garde que les commandes affichées
+  useEffect(() => {
+    setSelected((sel) => new Set([...sel].filter((id) => orders?.some((o) => o.id === id))))
+  }, [orders])
+
+  const picked = useMemo(() => (orders || []).filter((o) => selected.has(o.id)), [orders, selected])
+  const allPicked = orders?.length > 0 && picked.length === orders.length
+  const toggle = (id) => setSelected((sel) => {
+    const next = new Set(sel)
+    if (next.has(id)) next.delete(id)
+    else next.add(id)
+    return next
+  })
+  const toggleAll = () => setSelected(allPicked ? new Set() : new Set(orders.map((o) => o.id)))
+
+  const download = async (kind) => {
+    setBusy(kind)
+    try {
+      // Du plus ancien au plus récent : l'ordre de préparation des colis
+      await exportOrders([...picked].sort((a, b) => a.number - b.number), kind, (v) => statusOf(v).label)
+    } catch (e) {
+      window.alert(`Export impossible : ${e.message}`)
+    }
+    setBusy(null)
+  }
+
+  const bulkStatus = async (status) => {
+    if (!status) return
+    const label = statusOf(status).label
+    if (!window.confirm(`Passer ${picked.length} commande${picked.length > 1 ? 's' : ''} en « ${label} » ?`)) return
+    setBusy('status')
+    const ids = picked.map((o) => o.id)
+    const { error } = await supabase.from('orders').update({ status }).in('id', ids)
+    setBusy(null)
+    if (error) return window.alert(error.message)
+    setOrders((list) => list.map((x) => (ids.includes(x.id) ? { ...x, status } : x)))
+  }
 
   const setStatus = async (o, status) => {
     const { error } = await supabase.from('orders').update({ status }).eq('id', o.id)
@@ -69,6 +110,35 @@ export default function Orders() {
         ))}
       </div>
       {error && <p className="mb-4 text-bordeaux">{error}</p>}
+      {orders?.length > 0 && (
+        <div className="mb-3 flex flex-wrap items-center gap-3 text-[13px]">
+          <label className="inline-flex cursor-pointer items-center gap-2 text-ink">
+            <input type="checkbox" className="h-4 w-4 accent-bordeaux" checked={allPicked} onChange={toggleAll} />
+            Tout sélectionner ({orders.length})
+          </label>
+          <span className="text-muted">Astuce : filtrez sur « Confirmée », sélectionnez tout, puis exportez pour le transporteur.</span>
+        </div>
+      )}
+      {picked.length > 0 && (
+        <div className="admin-card sticky top-14 z-20 mb-3 flex flex-wrap items-center gap-3 p-3 md:top-2">
+          <span className="text-ink">
+            <strong>{picked.length}</strong> sélectionnée{picked.length > 1 ? 's' : ''} · {formatDH(picked.reduce((n, o) => n + Number(o.total), 0))} à encaisser
+          </span>
+          <div className="ml-auto flex flex-wrap gap-2">
+            <button className="btn btn-bordeaux" disabled={!!busy} onClick={() => download('livraison')}>
+              {busy === 'livraison' ? 'Export…' : 'Excel livraison'}
+            </button>
+            <button className="btn btn-outline bg-white hover:bg-ink" disabled={!!busy} onClick={() => download('detaille')}>
+              {busy === 'detaille' ? 'Export…' : 'Excel détaillé'}
+            </button>
+            <select className="input !min-h-[40px] w-auto" value="" disabled={!!busy} onChange={(e) => bulkStatus(e.target.value)} aria-label="Changer le statut">
+              <option value="">Changer le statut…</option>
+              {STATUSES.map((st) => <option key={st.value} value={st.value}>{st.label}</option>)}
+            </select>
+            <button className="px-2 text-muted underline" onClick={() => setSelected(new Set())}>Annuler</button>
+          </div>
+        </div>
+      )}
       {!orders ? <p className="text-muted">Chargement…</p> : orders.length === 0 ? (
         <p className="bg-white p-6 text-muted">Aucune commande.</p>
       ) : (
@@ -77,14 +147,19 @@ export default function Orders() {
             const st = statusOf(o.status)
             const expanded = open === o.id
             return (
-              <li key={o.id} className="bg-white">
-                <button className="flex w-full flex-wrap items-center gap-x-4 gap-y-1 p-4 text-left" onClick={() => setOpen(expanded ? null : o.id)}>
+              <li key={o.id} className={`bg-white ${selected.has(o.id) ? 'ring-2 ring-bordeaux/40' : ''}`}>
+                <div className="flex items-start">
+                <label className="flex cursor-pointer items-center self-stretch pl-4" aria-label={`Sélectionner la commande n°${o.number}`}>
+                  <input type="checkbox" className="h-4 w-4 accent-bordeaux" checked={selected.has(o.id)} onChange={() => toggle(o.id)} />
+                </label>
+                <button className="flex min-w-0 flex-1 flex-wrap items-center gap-x-4 gap-y-1 p-4 text-left" onClick={() => setOpen(expanded ? null : o.id)}>
                   <span className="font-serif text-[18px] text-ink">n°{o.number}</span>
                   <span className={`rounded-full px-2.5 py-0.5 text-[12px] ${st.cls}`}>{st.label}</span>
                   <span className="text-[13px] text-muted">{formatDate(o.created_at)}</span>
                   <span className="w-full text-ink md:w-auto">{o.customer_name} · {o.city}</span>
                   <span className="price ml-auto">{formatDH(o.total)}</span>
                 </button>
+                </div>
                 {expanded && (
                   <div className="grid gap-6 border-t border-line p-4 md:grid-cols-2">
                     <div>
