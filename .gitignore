@@ -35,3 +35,6 @@ supabase/.temp
 supabase/.branches
 coverage
 Thumbs.db
+
+# Fichier généré (npm run db:bundle)
+supabase/setup_complet.sql

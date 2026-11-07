@@ -160,10 +160,6 @@ insert into public.flavor_options (name, emoji, sort_order)
 select * from (values ('Framboise', '🍓', 1), ('Pistache', '🟢', 2), ('Coco', '🥥', 3), ('Caramel', '🍮', 4)) as v(name, emoji, sort_order)
 where not exists (select 1 from public.flavor_options);
 
--- ─── Promotion d'exemple (désactivée) ──────────────────────────
-insert into public.promotions (name, kind, value, target, code, active, banner_text)
-select 'Bienvenue -10%', 'percent', 10, 'all', 'BIENVENUE10', false, '🎉 -10% sur votre première commande avec le code BIENVENUE10'
-where not exists (select 1 from public.promotions);
 
 -- Aucun avis client n'est pré-rempli : ajoutez de vrais avis depuis /admin (la section se masque tant qu'il n'y en a pas).
 
