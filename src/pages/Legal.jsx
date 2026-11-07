@@ -3,7 +3,6 @@ import { Link } from 'react-router'
 import Seo from '../components/Seo'
 import { useSettings } from '../context/SiteData'
 import { deliveryMode, deliveryPromise } from '../lib/delivery'
-import { safeUrl } from '../lib/format'
 
 // Pages légales : mentions légales, conditions de vente, confidentialité.
 // Textes de base à faire valider ; les informations de l'entreprise viennent de l'admin (Paramètres).
@@ -170,7 +169,6 @@ export function Privacy() {
       <div>
         <h2>Vos droits</h2>
         <p>Conformément à la loi n° 09-08 relative à la protection des personnes physiques à l'égard du traitement des données à caractère personnel, vous pouvez accéder à vos données, les faire rectifier ou supprimer, et vous opposer à leur traitement. Écrivez-nous ({contactLine(s) || 'via WhatsApp'}) : nous répondons dans les meilleurs délais.</p>
-        <p>Vous pouvez aussi saisir la Commission nationale de contrôle de la protection des données à caractère personnel (CNDP, <a href={safeUrl('https://www.cndp.ma')} target="_blank" rel="noreferrer">www.cndp.ma</a>).</p>
       </div>
     </Page>
   )
