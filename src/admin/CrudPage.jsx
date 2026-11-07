@@ -19,6 +19,8 @@ import { Field } from './fields'
  *   load(row) → row,                              // mise en forme pour le formulaire (inverse de prepare)
  * }
  */
+const NOT_SAVED = "La modification n'a pas été enregistrée : la base l'a refusée. Vérifiez que ce compte est bien dans la table admins (voir README), puis reconnectez-vous."
+
 export default function CrudPage({ config }) {
   const { table, title, singular, fields, columns, defaults = {}, order = [['created_at', false]], lookups = {} } = config
   const [rows, setRows] = useState(null)
@@ -70,9 +72,11 @@ export default function CrudPage({ config }) {
     setSaving(true)
     setError(null)
     const { id, created_at: _c, ...payload } = row
-    const res = id ? await supabase.from(table).update(payload).eq('id', id) : await supabase.from(table).insert(payload)
+    // .select() : on récupère la ligne écrite, pour détecter un refus silencieux de la base (droits)
+    const res = id ? await supabase.from(table).update(payload).eq('id', id).select('id') : await supabase.from(table).insert(payload).select('id')
     setSaving(false)
     if (res.error) return setError(res.error.message.includes('duplicate') ? 'Cette valeur existe déjà (slug ou code en double).' : res.error.message)
+    if (!res.data?.length) return setError(NOT_SAVED)
     setEditing(null)
     load()
   }
@@ -86,7 +90,8 @@ export default function CrudPage({ config }) {
   }
 
   const toggle = async (row, col) => {
-    await supabase.from(table).update({ [col]: !row[col] }).eq('id', row.id)
+    const { data, error } = await supabase.from(table).update({ [col]: !row[col] }).eq('id', row.id).select('id')
+    if (error || !data?.length) window.alert(error?.message || NOT_SAVED)
     load()
   }
 
