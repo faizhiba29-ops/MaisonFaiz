@@ -1,13 +1,19 @@
-import { useState } from 'react'
+import { cloneElement, isValidElement, useId, useState } from 'react'
 import { CloseIcon, PlusIcon } from '../components/Icons'
 import { activeWeights, formatsOf } from '../lib/format'
 import { uploadImage } from '../lib/images'
 
 export function FieldWrap({ label, help, children, full }) {
+  const id = useId()
+  // Champ simple (input / textarea / select) : le libellé lui est relié pour les lecteurs d'écran
+  const isControl = isValidElement(children) && ['input', 'textarea', 'select'].includes(children.type)
+  const control = isControl && !children.props.id ? cloneElement(children, { id }) : children
   return (
     <div className={full ? 'md:col-span-2' : ''}>
-      {label && <span className="label">{label}</span>}
-      {children}
+      {label && (isControl
+        ? <label htmlFor={control.props.id} className="label">{label}</label>
+        : <span className="label">{label}</span>)}
+      {control}
       {help && <p className="mt-1 text-[12px] text-muted">{help}</p>}
     </div>
   )

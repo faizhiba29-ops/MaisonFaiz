@@ -14,6 +14,7 @@ returns boolean language sql stable security definer set search_path = public as
   select exists (select 1 from public.admins where user_id = auth.uid());
 $$;
 
+drop policy if exists "admins read self" on public.admins;
 create policy "admins read self" on public.admins for select to authenticated
   using (user_id = auth.uid());
 
@@ -190,13 +191,21 @@ begin
   end loop;
 end $$;
 
+drop policy if exists "public read" on public.settings;
 create policy "public read" on public.settings for select using (true);
+drop policy if exists "public read" on public.ingredients;
 create policy "public read" on public.ingredients for select using (true);
+drop policy if exists "public read" on public.products;
 create policy "public read" on public.products for select using (visible);
+drop policy if exists "public read" on public.packs;
 create policy "public read" on public.packs for select using (visible);
+drop policy if exists "public read" on public.recipes;
 create policy "public read" on public.recipes for select using (visible);
+drop policy if exists "public read" on public.reviews;
 create policy "public read" on public.reviews for select using (visible);
+drop policy if exists "public read" on public.faqs;
 create policy "public read" on public.faqs for select using (true);
+drop policy if exists "public read" on public.flavor_options;
 create policy "public read" on public.flavor_options for select using (true);
 -- promotions, flavor_votes, orders : aucune lecture publique (codes promo et données clients protégés)
 

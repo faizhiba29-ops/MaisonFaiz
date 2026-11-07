@@ -27,6 +27,9 @@ function Gallery({ product }) {
       <div
         ref={track}
         onScroll={(e) => setActive(Math.round(e.currentTarget.scrollLeft / e.currentTarget.clientWidth))}
+        tabIndex={0}
+        role="region"
+        aria-label={`Photos de ${product.name}`}
         className="no-scrollbar flex snap-x snap-mandatory overflow-x-auto"
       >
         {images.map((src, k) => (

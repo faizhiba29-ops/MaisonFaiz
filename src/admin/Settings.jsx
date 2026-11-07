@@ -175,7 +175,7 @@ export default function Settings() {
         return (
           <div className="grid grid-cols-2 gap-2">
             {[0, 1].map((i) => (
-              <select key={i} className="input" value={(v || [])[i] || ''}
+              <select key={i} className="input" aria-label={`Produit comparé n°${i + 1}`} value={(v || [])[i] || ''}
                 onChange={(e) => { const next = [...(v || ['', ''])]; next[i] = e.target.value; set(f.key, next) }}>
                 <option value="">— Produit —</option>
                 {products.map((p) => <option key={p.slug} value={p.slug}>{p.name}</option>)}
