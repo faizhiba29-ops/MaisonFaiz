@@ -38,3 +38,6 @@ Thumbs.db
 
 # Fichier généré (npm run db:bundle)
 supabase/setup_complet.sql
+
+# Rapports générés
+Rapport-audit-*.pdf
