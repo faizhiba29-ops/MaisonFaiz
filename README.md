@@ -84,6 +84,7 @@ Dans Supabase → **SQL Editor**, exécuter dans l'ordre :
 | `supabase/migrations/0004_security.sql` | Durcissement : fonctions internes verrouillées, limites d'upload |
 | `supabase/migrations/0005_order_reference.sql` | Références de commande séquentielles `MF-AAAA-NNNN` |
 | `supabase/migrations/0006_delivery_mode.sql` | Mode de livraison : incluse, frais fixes ou à confirmer |
+| `supabase/migrations/0007_compliance.sql` | Informations légales (vides par défaut) et descriptions sans allégations santé |
 
 ### 2. Compte administrateur
 
@@ -145,6 +146,21 @@ npm run dev             # http://localhost:5173 — admin : /admin
 | Secrets | `.env` jamais versionné ; la CI vérifie qu'aucun secret ne se retrouve dans le build |
 
 Voir [SECURITY.md](SECURITY.md) pour signaler une faille et la liste de contrôle avant mise en ligne.
+
+## Conformité
+
+| Point | Mise en œuvre |
+|---|---|
+| Pages légales | `/mentions-legales`, `/cgv` (prix, livraison, réclamations et remboursements), `/confidentialite` (loi 09-08, droits, CNDP) |
+| Informations de l'entreprise | Admin → Paramètres → Informations légales (RC, ICE, IF, adresse, n° CNDP) : affichées seulement si remplies |
+| Cookies | Aucun cookie publicitaire ni de mesure d'audience, donc pas de bandeau ; polices hébergées sur le site ; vidéos Instagram chargées seulement après un clic |
+| Formulaire de commande | Information sur l'usage des données, mémorisation des coordonnées sur l'appareil uniquement sur demande (case décochée) |
+| Suppression des données | Bouton « Effacer les données enregistrées sur cet appareil » (page Confidentialité) ; suppression d'une commande depuis l'admin sur demande |
+| Allégations | Descriptions factuelles des ingrédients, sans effet santé ni comparaison non justifiée |
+| Accessibilité | Contrastes WCAG AA, lien « Aller au contenu », navigation clavier, textes alternatifs |
+| Licences | Polices Cardo, Archivo, Amiri sous SIL Open Font License 1.1 ; photos et logo propriété de Maison Faiz foods |
+
+> Les textes juridiques sont des modèles : à faire relire, puis à compléter avec les informations réelles de l'entreprise.
 
 ## Utilisation de l'admin
 

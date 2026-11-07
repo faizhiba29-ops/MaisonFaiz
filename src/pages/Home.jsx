@@ -353,6 +353,8 @@ const INSTA_TILES = ['/images/recettes/recette-bol-gourmand.jpg', '/images/recet
 function Instagram() {
   const s = useSettings()
   const reels = (s.reels || []).map(reelEmbed).filter(Boolean)
+  // Les vidéos Instagram (Meta) déposent des cookies : on ne les charge qu'après un clic
+  const [showReels, setShowReels] = useState(false)
   return (
     <section className="section bg-creme-light">
       <div className="container-site">
@@ -365,7 +367,7 @@ function Instagram() {
             Suivre
           </a>
         </div>
-        {reels.length > 0 ? (
+        {reels.length > 0 && showReels ? (
           <div className="no-scrollbar -mx-4 flex snap-x gap-2 overflow-x-auto px-4 md:mx-0 md:grid md:grid-cols-3 md:px-0">
             {reels.map((src, k) => (
               <iframe key={src} src={src} title={`Reel Instagram ${k + 1}`} loading="lazy" allow="encrypted-media"
@@ -375,10 +377,18 @@ function Instagram() {
         ) : (
           <div className="grid grid-cols-2 gap-2 md:grid-cols-4">
             {INSTA_TILES.map((src) => (
-              <a key={src} href={safeUrl(s.instagram_url)} target="_blank" rel="noreferrer" className="media-frame group block aspect-square overflow-hidden">
+              <a key={src} href={safeUrl(s.instagram_url)} target="_blank" rel="noreferrer" aria-label={`Voir @${s.instagram_handle} sur Instagram`} className="media-frame group block aspect-square overflow-hidden">
                 <img src={src} alt="" loading="lazy" className="h-full w-full object-cover transition-transform duration-700 group-hover:scale-[1.03]" />
               </a>
             ))}
+          </div>
+        )}
+        {reels.length > 0 && !showReels && (
+          <div className="mt-6 text-center">
+            <button className="btn btn-outline" onClick={() => setShowReels(true)}>Voir nos vidéos Instagram</button>
+            <p className="mt-2 text-[13px] text-muted">
+              Les vidéos sont chargées depuis Instagram, qui peut déposer des cookies. <Link to="/confidentialite" className="underline">En savoir plus</Link>
+            </p>
           </div>
         )}
       </div>

@@ -56,7 +56,7 @@ export function Badge({ kind }) {
     promo: ['bg-bordeaux', 'Promo'],
     new: ['bg-chocolat', 'Nouveau'],
     best: ['bg-ink', 'Best-seller'],
-    soldout: ['bg-neutral-400', 'Épuisé'],
+    soldout: ['bg-neutral-500', 'Épuisé'],
   }
   const [cls, label] = styles[kind]
   return <span className={`badge ${cls}`}>{label}</span>

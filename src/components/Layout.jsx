@@ -104,6 +104,14 @@ function Header() {
 
   useEffect(() => setOpen(false), [pathname])
 
+  // Menu mobile : fermeture avec la touche Échap
+  useEffect(() => {
+    if (!open) return
+    const onKey = (e) => e.key === 'Escape' && setOpen(false)
+    window.addEventListener('keydown', onKey)
+    return () => window.removeEventListener('keydown', onKey)
+  }, [open])
+
   const navCls = ({ isActive }) => `link-underline py-1 ${isActive ? 'active text-bordeaux' : 'text-ink hover:text-bordeaux'}`
 
   return (
@@ -191,6 +199,11 @@ function Footer() {
         </div>
       </div>
       <div className="border-t border-line py-5 text-center text-xs text-muted">
+        <nav className="mb-2 flex flex-wrap justify-center gap-x-4 gap-y-1" aria-label="Informations légales">
+          <Link to="/mentions-legales" className="hover:text-ink">Mentions légales</Link>
+          <Link to="/cgv" className="hover:text-ink">Conditions de vente</Link>
+          <Link to="/confidentialite" className="hover:text-ink">Confidentialité</Link>
+        </nav>
         © {new Date().getFullYear()} Maison Faiz foods · Fait maison à {s.city || 'Fès'}
       </div>
     </footer>
@@ -244,9 +257,12 @@ export default function Layout() {
 
   return (
     <div className="flex min-h-screen flex-col">
+      <a href="#contenu" className="sr-only focus:not-sr-only focus:fixed focus:left-4 focus:top-4 focus:z-[60] focus:bg-ink focus:px-4 focus:py-3 focus:text-white">
+        Aller au contenu
+      </a>
       <AnnouncementBar />
       <Header />
-      <main className="flex-1">
+      <main id="contenu" tabIndex={-1} className="flex-1 outline-none">
         {loading ? <Loading /> : error ? (
           <div className="container-site py-24 text-center">
             <p className="font-serif text-2xl text-ink">Oups, le site n'a pas pu charger.</p>

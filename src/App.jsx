@@ -7,6 +7,7 @@ import { isConfigured, keyProblem } from './lib/supabase'
 import Benefits from './pages/Benefits'
 import Cart from './pages/Cart'
 import Home from './pages/Home'
+import { LegalNotice, Privacy, Terms } from './pages/Legal'
 import { Contact, Faq } from './pages/Info'
 import NotFound from './pages/NotFound'
 import Product from './pages/Product'
@@ -76,6 +77,9 @@ export default function App() {
             <Route path="faq" element={<Faq />} />
             <Route path="contact" element={<Contact />} />
             <Route path="panier" element={<Cart />} />
+            <Route path="mentions-legales" element={<LegalNotice />} />
+            <Route path="cgv" element={<Terms />} />
+            <Route path="confidentialite" element={<Privacy />} />
             <Route path="*" element={<NotFound />} />
           </Route>
         </Routes>

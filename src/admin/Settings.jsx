@@ -76,6 +76,20 @@ const SECTIONS = [
     ],
   },
   {
+    title: 'Informations légales',
+    fields: [
+      { key: 'legal_name', label: 'Nom du commerçant / raison sociale' },
+      { key: 'legal_form', label: 'Forme juridique', help: 'Ex. auto-entrepreneur, personne physique, SARL…' },
+      { key: 'legal_address', label: 'Adresse', full: true },
+      { key: 'legal_email', label: 'Email de contact' },
+      { key: 'legal_rc', label: 'Registre du commerce (RC)' },
+      { key: 'legal_ice', label: 'ICE' },
+      { key: 'legal_if', label: 'Identifiant fiscal (IF)' },
+      { key: 'legal_cndp', label: 'N° de déclaration CNDP', help: 'Déclaration du fichier clients (loi 09-08), sur cndp.ma.' },
+      { key: 'claim_hours', label: 'Délai pour signaler un colis abîmé (heures)', type: 'number' },
+    ],
+  },
+  {
     title: 'Conservation',
     fields: [
       { key: 'shelf_life_weeks', label: 'À consommer dans (semaines)', type: 'number' },

@@ -3,7 +3,7 @@
 @theme {
   --color-ink: #121212;
   --color-body: rgba(18, 18, 18, 0.75);
-  --color-muted: rgba(18, 18, 18, 0.55);
+  --color-muted: rgba(18, 18, 18, 0.62); /* contraste 5.2:1 (WCAG AA) */
   --color-line: rgba(18, 18, 18, 0.12);
   --color-bordeaux: #6B2D3C;
   --color-bordeaux-dark: #55222F;
@@ -12,7 +12,7 @@
   --color-creme-light: #FBF7F1;
   --color-kraft: #D9C3A0;
   --color-rose: #EBCFCB;
-  --color-whatsapp: #25D366;
+  --color-whatsapp: #0F7A43; /* vert WhatsApp foncé : texte blanc lisible (5.4:1) */
   --color-admin: #F4F2EF;
   --color-chart: #9C3F57; /* bordeaux éclairci, validé pour les graphiques (fond blanc) */
 

@@ -13,6 +13,10 @@ import { buildOrderMessage, waLink } from '../lib/whatsapp'
 const CUSTOMER_KEY = 'gbh-customer'
 const EMPTY = { name: '', phone: '', city: '', address: '', note: '' }
 
+const hasSavedCustomer = () => {
+  try { return Boolean(localStorage.getItem(CUSTOMER_KEY)) } catch { return false }
+}
+
 function loadCustomer() {
   try {
     return { ...EMPTY, ...JSON.parse(localStorage.getItem(CUSTOMER_KEY) || '{}'), note: '' }
@@ -49,6 +53,8 @@ export default function Cart() {
   const [quoteError, setQuoteError] = useState(false)
   const [codeInput, setCodeInput] = useState(code)
   const [form, setForm] = useState(loadCustomer)
+  // Mémoriser les coordonnées sur l'appareil : seulement si la cliente le choisit (décoché par défaut)
+  const [remember, setRemember] = useState(hasSavedCustomer)
   const [errors, setErrors] = useState({})
   const [sending, setSending] = useState(false)
   const [sendError, setSendError] = useState(null)
@@ -88,8 +94,9 @@ export default function Cart() {
     }
     try {
       const { name, phone, city, address } = form
-      localStorage.setItem(CUSTOMER_KEY, JSON.stringify({ name, phone, city, address }))
-    } catch { /* ignore */ }
+      if (remember) localStorage.setItem(CUSTOMER_KEY, JSON.stringify({ name, phone, city, address }))
+      else localStorage.removeItem(CUSTOMER_KEY)
+    } catch { /* stockage indisponible : rien à mémoriser */ }
 
     setSending(true)
     setSendError(null)
@@ -257,6 +264,10 @@ export default function Cart() {
                 <Field label="Remarque">
                   <textarea className="input min-h-[88px]" placeholder="Sans miel, créneau de livraison, cadeau…" value={form.note} onChange={update('note')} />
                 </Field>
+                <label className="flex cursor-pointer items-start gap-2 text-[14px] text-ink">
+                  <input type="checkbox" className="mt-1 h-4 w-4 accent-bordeaux" checked={remember} onChange={(e) => setRemember(e.target.checked)} />
+                  Se souvenir de mes coordonnées sur cet appareil
+                </label>
 
                 {sendError && (
                   <div className="border border-bordeaux p-4 text-[14px] text-bordeaux">
@@ -273,6 +284,11 @@ export default function Cart() {
                 </button>
                 <p className="text-center text-[12px] text-muted">
                   Votre commande s'ouvre dans WhatsApp, prête à être envoyée. Hiba vous confirme tout par message.
+                </p>
+                <p className="text-center text-[12px] text-muted">
+                  En envoyant votre commande, vous acceptez nos <Link to="/cgv" className="underline">conditions de vente</Link>.
+                  Vos coordonnées servent uniquement à préparer et livrer votre commande
+                  (<Link to="/confidentialite" className="underline">confidentialité</Link>).
                 </p>
               </form>
             </div>
