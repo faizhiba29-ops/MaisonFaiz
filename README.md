@@ -85,6 +85,7 @@ Dans Supabase → **SQL Editor**, exécuter dans l'ordre :
 | `supabase/migrations/0005_order_reference.sql` | Références de commande séquentielles `MF-AAAA-NNNN` |
 | `supabase/migrations/0006_delivery_mode.sql` | Mode de livraison : incluse, frais fixes ou à confirmer |
 | `supabase/migrations/0007_compliance.sql` | Informations légales (vides par défaut) et descriptions sans allégations santé |
+| `supabase/migrations/0008_peanut_pistache.sql` | Peanut Spread en vente (250g, 55 DH) et nouveau Granola Pistache |
 
 ### 2. Compte administrateur
 
