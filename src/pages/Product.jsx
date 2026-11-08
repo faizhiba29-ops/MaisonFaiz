@@ -10,12 +10,12 @@ import { displayPrice } from '../lib/pricing'
 import { deliveryPromise } from '../lib/delivery'
 import NotFound from './NotFound'
 
-function Gallery({ product }) {
+export function Gallery({ product, single }) {
   const images = (product.images || []).filter(Boolean)
   const [active, setActive] = useState(0)
   const track = useRef(null)
 
-  if (images.length <= 1) return <ProductVisual product={product} eager overlay={false} />
+  if (images.length <= 1) return single || <ProductVisual product={product} eager overlay={false} />
 
   const go = (k) => {
     setActive(k)
@@ -51,7 +51,7 @@ function Gallery({ product }) {
 }
 
 // Ligne repliable (ingrédients, livraison…)
-function Collapsible({ title, children, open }) {
+export function Collapsible({ title, children, open }) {
   return (
     <details className="group border-b border-line" open={open}>
       <summary className="flex cursor-pointer list-none items-center justify-between gap-4 py-4 text-[15px] text-ink [&::-webkit-details-marker]:hidden">

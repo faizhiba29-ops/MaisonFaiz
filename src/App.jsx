@@ -11,6 +11,7 @@ import { LegalNotice, Privacy, Terms } from './pages/Legal'
 import { Contact, Faq } from './pages/Info'
 import NotFound from './pages/NotFound'
 import Product from './pages/Product'
+import Pack from './pages/Pack'
 import Recipes from './pages/Recipes'
 import Shop from './pages/Shop'
 
@@ -72,6 +73,7 @@ export default function App() {
             <Route path="boutique/:category" element={<Shop />} />
             <Route path="granolas" element={<Navigate to="/boutique/granola" replace />} />
             <Route path="produits/:slug" element={<Product />} />
+            <Route path="packs/:slug" element={<Pack />} />
             <Route path="bienfaits" element={<Benefits />} />
             <Route path="comment-le-deguster" element={<Recipes />} />
             <Route path="faq" element={<Faq />} />

@@ -149,16 +149,18 @@ export function PackCard({ pack, index = 0 }) {
   const contents = packContents(pack, products)
 
   return (
-    <div className="group flex flex-col">
-      <div className="relative">
-        <Visual image={pack.image} themeName={pack.theme} name={pack.name} art="duo" split={index % 2 === 0} overlay={contents.length ? `${contents.length} granolas` : null} />
-        <div className="absolute bottom-3 left-3 flex gap-1.5">
-          {!pack.available && <Badge kind="soldout" />}
-          {dp.promo && <Badge kind="promo" />}
+    <div className="flex flex-col">
+      <Link to={`/packs/${pack.slug}`} className="group block">
+        <div className="relative">
+          <Visual image={pack.image} themeName={pack.theme} name={pack.name} art="duo" split={index % 2 === 0} overlay={contents.length ? `${contents.length} produits` : null} />
+          <div className="absolute bottom-3 left-3 flex gap-1.5">
+            {!pack.available && <Badge kind="soldout" />}
+            {dp.promo && <Badge kind="promo" />}
+          </div>
         </div>
-      </div>
-      <div className="flex flex-1 flex-col pt-3">
-        <h3 className="text-[16px] md:text-[18px]">{pack.name}</h3>
+        <h3 className="pt-3 text-[16px] leading-snug underline-offset-4 group-hover:underline md:text-[18px]">{pack.name}</h3>
+      </Link>
+      <div className="flex flex-1 flex-col">
         {contents.length > 0 && <p className="text-sm text-muted">{contents.join(' + ')}</p>}
         <div className="mb-3 mt-1"><PriceTag price={dp.price} original={dp.original} /></div>
         <button

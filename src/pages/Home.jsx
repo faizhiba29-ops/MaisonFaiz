@@ -140,7 +140,7 @@ function PackFeature() {
       <div className="container-site">
         <ImageWithText image={pack.image} imageAlt={pack.name} fallback={<Visual themeName={pack.theme} name={pack.name} art="duo" />}>
           <p className="eyebrow">Pack</p>
-          <h2 className="h2 mt-2">{pack.name}</h2>
+          <h2 className="h2 mt-2"><Link to={`/packs/${pack.slug}`} className="underline-offset-4 hover:underline">{pack.name}</Link></h2>
           <div className="mt-3"><PriceTag price={dp.price} original={dp.original} className="!text-[17px]" /></div>
           {pack.description && <p className="mt-4">{pack.description}</p>}
           {contents.length > 0 && (
@@ -148,10 +148,13 @@ function PackFeature() {
               {contents.map((c) => <li key={c}>{c}</li>)}
             </ul>
           )}
-          <button className="btn btn-primary mt-7 w-full sm:w-auto" disabled={!pack.available}
-            onClick={() => add({ type: 'pack', id: pack.id }, pack.name)}>
-            {pack.available ? 'Ajouter au panier' : 'Bientôt disponible'}
-          </button>
+          <div className="mt-7 flex flex-col gap-3 sm:flex-row">
+            <button className="btn btn-primary w-full sm:w-auto" disabled={!pack.available}
+              onClick={() => add({ type: 'pack', id: pack.id }, pack.name)}>
+              {pack.available ? 'Ajouter au panier' : 'Bientôt disponible'}
+            </button>
+            <Link to={`/packs/${pack.slug}`} className="btn btn-outline w-full sm:w-auto">Voir le pack</Link>
+          </div>
         </ImageWithText>
         {others.length > 0 && (
           <div className="mt-10 grid grid-cols-2 gap-2 md:grid-cols-3">
