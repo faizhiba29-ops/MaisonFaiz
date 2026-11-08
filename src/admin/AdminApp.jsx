@@ -2,7 +2,7 @@ import { useEffect, useState } from 'react'
 import { NavLink, Outlet, useLocation } from 'react-router'
 import {
   BookIcon, ChartIcon, CloseIcon, ExternalIcon, GearIcon, GiftIcon, HelpIcon, HomeIcon, LeafIcon,
-  FolderIcon, LogoutIcon, MenuIcon, PercentIcon, ReceiptIcon, StarIcon, TagIcon,
+  FolderIcon, LockIcon, LogoutIcon, MenuIcon, PercentIcon, ReceiptIcon, StarIcon, TagIcon,
 } from '../components/Icons'
 import { supabase } from '../lib/supabase'
 
@@ -26,6 +26,7 @@ const NAV = [
   ] },
   { group: 'Boutique', items: [
     ['/admin/parametres', 'Paramètres', GearIcon],
+    ['/admin/compte', 'Mon compte', LockIcon],
   ] },
 ]
 

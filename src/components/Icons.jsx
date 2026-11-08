@@ -66,3 +66,4 @@ export const ExternalIcon = make(<><path d="M14 4h6v6M20 4l-9 9" /><path d="M18 
 export const LogoutIcon = make(<><path d="M15 4h4v16h-4" /><path d="M10 8l-4 4 4 4M6 12h10" /></>)
 export const ArrowUpRight = make(<path d="M7 17 17 7M8 7h9v9" />)
 export const FolderIcon = make(<path d="M3 6h6l2 2h10v11H3V6Z" />)
+export const LockIcon = make(<><rect x="5" y="10" width="14" height="10" rx="1.5" /><path d="M8 10V7a4 4 0 0 1 8 0v3" /><circle cx="12" cy="15" r=".8" fill="currentColor" /></>)

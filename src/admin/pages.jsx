@@ -4,6 +4,7 @@ import * as configs from './configs'
 import Dashboard from './Dashboard'
 import Orders from './Orders'
 import Settings from './Settings'
+import Account from './Account'
 import Votes from './Votes'
 
 const crud = {
@@ -24,6 +25,7 @@ export default function AdminPages() {
       <Route path="commandes" element={<Orders />} />
       <Route path="votes" element={<Votes />} />
       <Route path="parametres" element={<Settings />} />
+      <Route path="compte" element={<Account />} />
       {Object.entries(crud).map(([path, config]) => (
         <Route key={path} path={path} element={<CrudPage key={path} config={config} />} />
       ))}
