@@ -87,6 +87,7 @@ Dans Supabase → **SQL Editor**, exécuter dans l'ordre :
 | `supabase/migrations/0007_compliance.sql` | Informations légales (vides par défaut) et descriptions sans allégations santé |
 | `supabase/migrations/0008_peanut_pistache.sql` | Peanut Spread en vente (250g, 55 DH) et nouveau Granola Pistache |
 | `supabase/migrations/0009_pistache_photos_instagram.sql` | Photos du Granola Pistache et des nouveaux ingrédients, compte Instagram @maison_faiz_foods |
+| `supabase/migrations/0010_etiquettes.sql` | Étiquettes Maison Faiz du Lite, du Pistache et du Peanut Spread en 2e photo |
 
 ### 2. Compte administrateur
 
