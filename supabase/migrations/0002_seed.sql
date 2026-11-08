@@ -6,8 +6,8 @@
 insert into public.settings (key, value) values
   ('whatsapp_number', '"212618145078"'),
   ('whatsapp_display', '"06 18 14 50 78"'),
-  ('instagram_handle', '"granola_byhiba"'),
-  ('instagram_url', '"https://www.instagram.com/granola_byhiba/"'),
+  ('instagram_handle', '"maison_faiz_foods"'),
+  ('instagram_url', '"https://www.instagram.com/maison_faiz_foods/"'),
   ('reels', '["", "", ""]'),
   ('announcement_ar', '"التوصيل لجميع مدن المغرب"'),
   ('announcement_fr', '"Livraison partout au Maroc"'),
