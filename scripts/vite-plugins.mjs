@@ -4,6 +4,7 @@ import { readdir, readFile } from 'node:fs/promises'
 import path from 'node:path'
 import sharp from 'sharp'
 import { loadEnv } from 'vite'
+import { mobileHeroImages } from '../src/lib/hero.js'
 
 const WIDTHS = [400, 800, 1600]
 const VIRTUAL = 'virtual:responsive-images'
@@ -130,17 +131,20 @@ export function fastFirstPaint({ images }) {
         if (data) {
           const json = JSON.stringify(data).replace(/</g, '\\u003c')
           tags.push({ tag: 'script', attrs: { id: 'site-data', type: 'application/json' }, children: json, injectTo: 'body-prepend' })
-          // Photo principale de l'accueil
-          const hero = data.settings.find((r) => r.key === 'hero_images')?.value?.find(Boolean)
-          if (hero) {
-            const v = images.api.manifest[hero]
+          // Photo principale de l'accueil : version ordinateur et version téléphone
+          const settings = Object.fromEntries(data.settings.map((r) => [r.key, r.value]))
+          const hero = (settings.hero_images || []).find(Boolean)
+          const preload = (src, media) => {
+            const v = images.api.manifest[src]
             tags.push({
               tag: 'link',
-              attrs: v
-                ? { rel: 'preload', as: 'image', imagesrcset: srcSet(v), imagesizes: '(min-width: 768px) 100vw, 200vw', fetchpriority: 'high' }
-                : { rel: 'preload', as: 'image', href: hero, fetchpriority: 'high' },
+              attrs: { rel: 'preload', as: 'image', media, fetchpriority: 'high', ...(v ? { imagesrcset: srcSet(v), imagesizes: '100vw' } : { href: src }) },
               injectTo: 'head',
             })
+          }
+          if (hero) {
+            preload(hero, '(min-width: 768px)')
+            preload(mobileHeroImages(settings)[0], '(max-width: 767px)')
           }
         }
         return { html, tags }

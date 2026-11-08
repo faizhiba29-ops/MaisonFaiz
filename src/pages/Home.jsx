@@ -10,7 +10,8 @@ import { gridColsClass, safeUrl } from '../lib/format'
 import { displayPrice } from '../lib/pricing'
 import { db } from '../lib/config'
 import { waLink } from '../lib/whatsapp'
-import Img from '../components/Img'
+import Img, { srcSetOf } from '../components/Img'
+import { mobileHeroImages } from '../lib/hero'
 
 // En-tête de section aligné à gauche, avec lien optionnel à droite
 function SectionHead({ eyebrow, title, text, link, linkLabel }) {
@@ -33,6 +34,7 @@ function SectionHead({ eyebrow, title, text, link, linkLabel }) {
 function Hero() {
   const s = useSettings()
   const images = (s.hero_images || []).filter(Boolean)
+  const mobile = mobileHeroImages(s)
   const [i, setI] = useState(0)
 
   useEffect(() => {
@@ -58,21 +60,28 @@ function Hero() {
     </>
   )
 
-  // Photo claire (produit à gauche, espace libre à droite) : texte à droite sur ordinateur, sous la photo sur téléphone
+  // Photo claire (produit à gauche, espace libre à droite) : texte à droite sur ordinateur.
+  // Sur téléphone : version verticale centrée sur le produit (voir lib/hero.js), texte sous la photo.
   if (images.length > 0) {
     return (
       <section className="relative overflow-hidden bg-creme-light md:h-[78vh] md:min-h-[540px]">
-        <div className="relative h-[50vh] min-h-[300px] md:absolute md:inset-0 md:h-full">
-          {images.map((src, k) => (
-            <Img key={src} src={src} sizes="(min-width: 768px) 100vw, 200vw" alt="Maison Faiz foods" fetchPriority={k === 0 ? 'high' : 'auto'} loading={k === 0 ? 'eager' : 'lazy'}
-              className={`absolute inset-0 h-full w-full object-cover object-left transition-opacity duration-1000 ${k === i ? 'opacity-100' : 'opacity-0'}`} />
-          ))}
+        <div className="relative h-[56vh] min-h-[340px] md:absolute md:inset-0 md:h-full">
+          {images.map((src, k) => {
+            const small = mobile[k] || mobile[0]
+            return (
+              <picture key={src}>
+                <source media="(max-width: 767px)" srcSet={srcSetOf(small) || small} sizes="100vw" />
+                <Img src={src} sizes="100vw" alt="Maison Faiz foods" fetchPriority={k === 0 ? 'high' : 'auto'} loading={k === 0 ? 'eager' : 'lazy'}
+                  className={`absolute inset-0 h-full w-full object-cover object-center transition-opacity duration-1000 md:object-left ${k === i ? 'opacity-100' : 'opacity-0'}`} />
+              </picture>
+            )
+          })}
         </div>
         <div className="container-site relative py-10 text-center md:flex md:h-full md:items-center md:justify-end md:py-0 md:text-left">
           <div className="md:w-[44%]">{content(true)}</div>
         </div>
         {images.length > 1 && (
-          <div className="absolute left-1/2 top-[46vh] flex -translate-x-1/2 gap-2 md:bottom-6 md:top-auto">
+          <div className="absolute left-1/2 top-[52vh] flex -translate-x-1/2 gap-2 md:bottom-6 md:top-auto">
             {images.map((src, k) => (
               <button key={src} onClick={() => setI(k)} aria-label={`Image ${k + 1}`} className={`h-[2px] w-8 ${k === i ? 'bg-ink' : 'bg-ink/25'}`} />
             ))}

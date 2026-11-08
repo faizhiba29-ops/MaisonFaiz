@@ -26,7 +26,8 @@ const SECTIONS = [
       { key: 'hero_title', label: 'Titre', full: true },
       { key: 'hero_subtitle', label: 'Sous-titre' },
       { key: 'hero_subtitle_ar', label: 'Petit texte en arabe', dir: 'rtl' },
-      { key: 'hero_images', label: 'Photos du hero (carrousel)', type: 'images', full: true, help: 'Format paysage, lumineux. Sans photo, une illustration est affichée.' },
+      { key: 'hero_images', label: 'Photos du hero (carrousel)', type: 'images', full: true, help: 'Format paysage, lumineux, produit à gauche et espace libre à droite pour le texte. Sans photo, une illustration est affichée.' },
+      { key: 'hero_image_mobile', label: 'Photo du hero sur téléphone (optionnel)', type: 'image', full: true, help: 'Format vertical, produit au centre. Sans photo, la photo du hero est recadrée automatiquement.' },
     ],
   },
   {
