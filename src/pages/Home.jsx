@@ -8,8 +8,9 @@ import { useCart } from '../context/Cart'
 import { useSettings, useSiteData } from '../context/SiteData'
 import { gridColsClass, safeUrl } from '../lib/format'
 import { displayPrice } from '../lib/pricing'
-import { supabase } from '../lib/supabase'
+import { db } from '../lib/config'
 import { waLink } from '../lib/whatsapp'
+import Img from '../components/Img'
 
 // En-tête de section aligné à gauche, avec lien optionnel à droite
 function SectionHead({ eyebrow, title, text, link, linkLabel }) {
@@ -63,7 +64,7 @@ function Hero() {
       <section className="relative overflow-hidden bg-creme-light md:h-[78vh] md:min-h-[540px]">
         <div className="relative h-[50vh] min-h-[300px] md:absolute md:inset-0 md:h-full">
           {images.map((src, k) => (
-            <img key={src} src={src} alt="Maison Faiz foods" fetchPriority={k === 0 ? 'high' : 'auto'} loading={k === 0 ? 'eager' : 'lazy'}
+            <Img key={src} src={src} sizes="(min-width: 768px) 100vw, 200vw" alt="Maison Faiz foods" fetchPriority={k === 0 ? 'high' : 'auto'} loading={k === 0 ? 'eager' : 'lazy'}
               className={`absolute inset-0 h-full w-full object-cover object-left transition-opacity duration-1000 ${k === i ? 'opacity-100' : 'opacity-0'}`} />
           ))}
         </div>
@@ -121,7 +122,7 @@ function ImageWithText({ image, imageAlt, reverse, children, fallback }) {
   return (
     <div className={`grid items-center gap-8 md:grid-cols-2 md:gap-14 ${reverse ? 'md:[&>*:first-child]:order-2' : ''}`}>
       <div className="media-frame relative aspect-square overflow-hidden bg-creme">
-        {image ? <img src={image} alt={imageAlt} loading="lazy" className="h-full w-full object-cover" /> : fallback}
+        {image ? <Img src={image} sizes="(min-width: 768px) 50vw, 100vw" alt={imageAlt} loading="lazy" className="h-full w-full object-cover" /> : fallback}
       </div>
       <div className="md:px-6">{children}</div>
     </div>
@@ -221,7 +222,7 @@ function Compare() {
           <div className="hidden md:block" />
           {[a, b].map((p, k) => (
             <Link key={p.id} to={`/produits/${p.slug}`} className="group block">
-              <Visual image={p.images?.[0]} themeName={p.theme} name={p.name} art={k ? 'jar' : 'bag'} choco={k === 1} split={k === 0} />
+              <Visual image={p.images?.[0]} themeName={p.theme} name={p.name} art={k ? 'jar' : 'bag'} choco={k === 1} split={k === 0} sizes="(min-width: 768px) 40vw, 50vw" />
               <h3 className="mt-3 text-[18px] underline-offset-4 group-hover:underline md:text-[22px]">{p.name}</h3>
             </Link>
           ))}
@@ -242,7 +243,7 @@ function Reviews() {
   const [reviews, setReviews] = useState([])
   const track = useRef(null)
   useEffect(() => {
-    supabase.from('reviews').select('*').order('sort_order').order('created_at', { ascending: false })
+    db().then((supabase) => supabase.from('reviews').select('*').order('sort_order').order('created_at', { ascending: false }))
       .then(({ data }) => setReviews(data || []))
   }, [])
   if (!reviews.length) return null
@@ -264,7 +265,7 @@ function Reviews() {
             <figure key={r.id} className="w-[85%] shrink-0 snap-start border border-line p-6 sm:w-[46%] md:w-[32%]">
               <Stars value={r.rating} className="text-ink" />
               <blockquote className="mt-4 font-serif text-[18px] leading-snug text-ink">{r.text}</blockquote>
-              {r.image && <img src={r.image} alt="" loading="lazy" className="mt-4 max-h-56 w-full object-cover" />}
+              {r.image && <Img src={r.image} sizes="(min-width: 768px) 33vw, 85vw" alt="" loading="lazy" className="mt-4 max-h-56 w-full object-cover" />}
               <figcaption className="eyebrow mt-5">{r.name}{r.city ? ` — ${r.city}` : ''}</figcaption>
             </figure>
           ))}
@@ -296,7 +297,7 @@ function FlavorVote() {
   const [busy, setBusy] = useState(false)
 
   useEffect(() => {
-    supabase.rpc('flavor_results').then(({ data }) => setOptions(data || []))
+    db().then((supabase) => supabase.rpc('flavor_results')).then(({ data }) => setOptions(data || []))
   }, [])
 
   if (!options.length) return null
@@ -304,6 +305,7 @@ function FlavorVote() {
 
   const vote = async (id) => {
     setBusy(true)
+    const supabase = await db()
     const { data, error } = await supabase.rpc('cast_vote', { p_option: id, p_token: voterToken() })
     setBusy(false)
     if (error) return
@@ -381,7 +383,7 @@ function Instagram() {
           <div className="grid grid-cols-2 gap-2 md:grid-cols-4">
             {INSTA_TILES.map((src) => (
               <a key={src} href={safeUrl(s.instagram_url)} target="_blank" rel="noreferrer" aria-label={`Voir @${s.instagram_handle} sur Instagram`} className="media-frame group block aspect-square overflow-hidden">
-                <img src={src} alt="" loading="lazy" className="h-full w-full object-cover transition-transform duration-700 group-hover:scale-[1.03]" />
+                <Img src={src} sizes="(min-width: 768px) 25vw, 50vw" alt="" loading="lazy" className="h-full w-full object-cover transition-transform duration-700 group-hover:scale-[1.03]" />
               </a>
             ))}
           </div>

@@ -8,14 +8,17 @@ import { useSettings, useSiteData } from '../context/SiteData'
 import { activeWeights, bulkSaving, formatDH, priceFor } from '../lib/format'
 import { displayPrice } from '../lib/pricing'
 import { deliveryPromise } from '../lib/delivery'
+import Img from '../components/Img'
 import NotFound from './NotFound'
+
+export const GALLERY_SIZES = '(min-width: 768px) 55vw, 100vw'
 
 export function Gallery({ product, single }) {
   const images = (product.images || []).filter(Boolean)
   const [active, setActive] = useState(0)
   const track = useRef(null)
 
-  if (images.length <= 1) return single || <ProductVisual product={product} eager overlay={false} />
+  if (images.length <= 1) return single || <ProductVisual product={product} eager overlay={false} sizes={GALLERY_SIZES} />
 
   const go = (k) => {
     setActive(k)
@@ -34,7 +37,7 @@ export function Gallery({ product, single }) {
       >
         {images.map((src, k) => (
           <div key={src} className="w-full shrink-0 snap-center">
-            <Visual image={src} themeName={product.theme} name={product.name} eager={k === 0} />
+            <Visual image={src} themeName={product.theme} name={product.name} eager={k === 0} sizes={GALLERY_SIZES} />
           </div>
         ))}
       </div>
@@ -42,7 +45,7 @@ export function Gallery({ product, single }) {
         {images.map((src, k) => (
           <button key={src} onClick={() => go(k)} aria-label={`Photo ${k + 1}`}
             className={`aspect-square overflow-hidden border ${k === active ? 'border-ink' : 'border-transparent opacity-60 hover:opacity-100'}`}>
-            <img src={src} alt="" loading="lazy" className="h-full w-full object-cover" />
+            <Img src={src} sizes="100px" alt="" loading="lazy" className="h-full w-full object-cover" />
           </button>
         ))}
       </div>

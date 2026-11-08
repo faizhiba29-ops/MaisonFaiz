@@ -3,6 +3,7 @@ import { Link, useLocation } from 'react-router'
 import Seo from '../components/Seo'
 import { useSettings, useSiteData } from '../context/SiteData'
 import { theme } from '../lib/themes'
+import Img from '../components/Img'
 
 const THEMES = ['kraft', 'creme', 'rose', 'kraft', 'creme', 'rose']
 
@@ -63,7 +64,7 @@ export default function Benefits() {
                   <div className="relative flex aspect-[4/3] items-center justify-center overflow-hidden"
                     style={{ background: `linear-gradient(135deg, ${t.a} 0 60%, ${t.b} 60% 100%)` }}>
                     {ing.image
-                      ? <img src={ing.image} alt={ing.name_fr} loading="lazy" className="absolute inset-0 h-full w-full object-cover" />
+                      ? <Img src={ing.image} sizes="(min-width: 1024px) 33vw, (min-width: 640px) 50vw, 100vw" alt={ing.name_fr} loading="lazy" className="absolute inset-0 h-full w-full object-cover" />
                       : <span className="text-[64px]">{ing.icon}</span>}
                     {ing.allergen && <span className="badge absolute bottom-3 left-3 bg-chocolat">Fruit à coque / allergène</span>}
                   </div>

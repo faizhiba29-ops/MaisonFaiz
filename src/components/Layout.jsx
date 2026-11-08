@@ -1,6 +1,7 @@
-import { useEffect, useMemo, useState } from 'react'
+import { Suspense, useEffect, useMemo, useState } from 'react'
 import { Link, NavLink, Outlet, useLocation } from 'react-router'
 import { useCart } from '../context/Cart'
+import Img from './Img'
 import { useSettings, useSiteData } from '../context/SiteData'
 import { waLink } from '../lib/whatsapp'
 import { safeUrl } from '../lib/format'
@@ -44,7 +45,7 @@ function AnnouncementBar() {
 function Logo({ className = '' }) {
   return (
     <Link to="/" className={`block shrink-0 ${className}`} aria-label="Maison Faiz foods — accueil">
-      <img src="/images/brand/logo.png" alt="Maison Faiz foods" width="477" height="121" className="h-[36px] w-auto md:h-[44px]" />
+      <Img src="/images/brand/logo.png" sizes="(min-width: 768px) 174px, 142px" alt="Maison Faiz foods" width="477" height="121" className="h-[36px] w-auto md:h-[44px]" />
     </Link>
   )
 }
@@ -274,7 +275,7 @@ export default function Layout() {
               </p>
             )}
           </div>
-        ) : <Outlet />}
+        ) : <Suspense fallback={<Loading />}><Outlet /></Suspense>}
       </main>
       <Footer />
       <WhatsAppFloat />

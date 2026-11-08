@@ -29,7 +29,7 @@ export default function Recipes() {
             <div className="grid grid-cols-1 gap-x-2 gap-y-8 sm:grid-cols-2 lg:grid-cols-3">
               {recipes.map((r, k) => (
                 <article key={r.id}>
-                  <Visual image={r.image} themeName={r.theme} name={r.title} art={k % 3 === 2 ? 'jar' : 'bowl'} split={k % 2 === 0} choco={k % 2 === 1} />
+                  <Visual image={r.image} themeName={r.theme} name={r.title} art={k % 3 === 2 ? 'jar' : 'bowl'} split={k % 2 === 0} choco={k % 2 === 1} sizes="(min-width: 1024px) 33vw, (min-width: 640px) 50vw, 100vw" />
                   <div className="pt-4">
                     <div className="flex items-center justify-between gap-3">
                       <h2 className="text-[22px]">{r.title}</h2>
@@ -63,7 +63,7 @@ export default function Recipes() {
       {tips.length > 0 && (
         <section className="section bg-creme-light">
           <div className="container-site grid gap-8 md:grid-cols-2 md:items-center md:gap-16">
-            <Visual image="/images/produits/classic.jpg" name="Bocal de granola" />
+            <Visual image="/images/produits/classic.jpg" name="Bocal de granola" sizes="(min-width: 768px) 50vw, 100vw" />
             <div>
               <h2 className="text-[30px] md:text-[38px]">Bien le conserver</h2>
               <ul className="mt-5 space-y-3">

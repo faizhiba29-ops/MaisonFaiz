@@ -9,7 +9,7 @@ import { formatDH, priceFor } from '../lib/format'
 import { displayPrice } from '../lib/pricing'
 import { deliveryPromise } from '../lib/delivery'
 import NotFound from './NotFound'
-import { Collapsible, Gallery } from './Product'
+import { Collapsible, Gallery, GALLERY_SIZES } from './Product'
 
 export default function PackPage() {
   const { slug } = useParams()
@@ -58,7 +58,7 @@ function Pack({ slug }) {
         <div className="md:sticky md:top-24 md:self-start">
           <Gallery
             product={{ images, theme: pack.theme, name: pack.name }}
-            single={<Visual image={images[0]} themeName={pack.theme} name={pack.name} art="duo" eager />}
+            single={<Visual image={images[0]} themeName={pack.theme} name={pack.name} art="duo" eager sizes={GALLERY_SIZES} />}
           />
         </div>
 
@@ -92,7 +92,7 @@ function Pack({ slug }) {
                   <li key={k}>
                     <Link to={`/produits/${l.product.slug}`} className="group flex items-center gap-3 py-3">
                       <span className="w-14 shrink-0">
-                        <Visual image={l.product.images?.[0]} themeName={l.product.theme} name={l.product.name} />
+                        <Visual image={l.product.images?.[0]} themeName={l.product.theme} name={l.product.name} sizes="56px" />
                       </span>
                       <span className="min-w-0 flex-1">
                         <span className="block text-ink underline-offset-4 group-hover:underline">{l.product.name}</span>

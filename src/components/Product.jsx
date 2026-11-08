@@ -5,14 +5,16 @@ import { activeWeights, formatDH, priceFor } from '../lib/format'
 import { displayPrice, hasAutoPromo } from '../lib/pricing'
 import { theme } from '../lib/themes'
 import { BagArt, BowlArt, DuoArt, JarArt } from './Art'
+import Img from './Img'
 
 const ART = { bag: BagArt, jar: JarArt, bowl: BowlArt, duo: DuoArt }
 
 /**
  * Visuel carré : photo uploadée, ou illustration sur fond coloré (aplat ou coupe en diagonale).
  * `hoverImage` : 2e photo qui apparaît au survol (desktop).
+ * `sizes` : largeur affichée, pour que le navigateur télécharge la bonne taille de photo.
  */
-export function Visual({ image, hoverImage, themeName, name, art = 'bag', artTitle, overlay, split = true, choco, eager, className = '', children }) {
+export function Visual({ image, hoverImage, themeName, name, art = 'bag', artTitle, overlay, split = true, choco, eager, sizes = '(min-width: 768px) 25vw, 50vw', className = '', children }) {
   const t = theme(themeName)
   const Art = ART[art] || BagArt
   const bg = split ? `linear-gradient(135deg, ${t.a} 0 58%, ${t.b} 58% 100%)` : t.a
@@ -20,15 +22,15 @@ export function Visual({ image, hoverImage, themeName, name, art = 'bag', artTit
     <div className={`group/visual media-frame relative aspect-square overflow-hidden ${className}`} style={{ background: bg }}>
       {image ? (
         <>
-          <img
+          <Img
             src={image}
+            sizes={sizes}
             alt={name}
             loading={eager ? 'eager' : 'lazy'}
-            decoding="async"
             className="absolute inset-0 h-full w-full object-cover transition-transform duration-700 group-hover/visual:scale-[1.03]"
           />
           {hoverImage && (
-            <img src={hoverImage} alt="" loading="lazy" aria-hidden
+            <Img src={hoverImage} sizes={sizes} alt="" loading="lazy" aria-hidden
               className="absolute inset-0 h-full w-full object-cover opacity-0 transition-opacity duration-500 group-hover/visual:opacity-100" />
           )}
         </>
@@ -85,7 +87,7 @@ const productArt = (p) => (p.category === 'sellou' ? 'bowl' : p.category === 'pa
 const ART_TITLES = { granola: 'Granola', sellou: 'Sellou', 'pates-a-tartiner': 'Pâte à tartiner' }
 const isChoco = (p) => /chocolat|ferrero/i.test(p.name)
 
-export function ProductVisual({ product, eager, overlay = true, index = 0 }) {
+export function ProductVisual({ product, eager, overlay = true, index = 0, sizes }) {
   return (
     <Visual
       image={product.images?.[0]}
@@ -98,6 +100,7 @@ export function ProductVisual({ product, eager, overlay = true, index = 0 }) {
       split={index % 3 !== 1}
       choco={isChoco(product)}
       eager={eager}
+      sizes={sizes}
     />
   )
 }

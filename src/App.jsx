@@ -3,17 +3,22 @@ import { BrowserRouter, Navigate, Route, Routes } from 'react-router'
 import Layout, { Loading } from './components/Layout'
 import { CartProvider } from './context/Cart'
 import { SiteDataProvider } from './context/SiteData'
-import { isConfigured, keyProblem } from './lib/supabase'
-import Benefits from './pages/Benefits'
-import Cart from './pages/Cart'
+import { isConfigured, keyProblem } from './lib/config'
 import Home from './pages/Home'
-import { LegalNotice, Privacy, Terms } from './pages/Legal'
-import { Contact, Faq } from './pages/Info'
-import NotFound from './pages/NotFound'
-import Product from './pages/Product'
-import Pack from './pages/Pack'
-import Recipes from './pages/Recipes'
-import Shop from './pages/Shop'
+
+// Pages chargées à la demande : l'accueil s'affiche sans télécharger le code des autres pages.
+const Benefits = lazy(() => import('./pages/Benefits'))
+const Cart = lazy(() => import('./pages/Cart'))
+const Contact = lazy(() => import('./pages/Info').then((m) => ({ default: m.Contact })))
+const Faq = lazy(() => import('./pages/Info').then((m) => ({ default: m.Faq })))
+const LegalNotice = lazy(() => import('./pages/Legal').then((m) => ({ default: m.LegalNotice })))
+const Privacy = lazy(() => import('./pages/Legal').then((m) => ({ default: m.Privacy })))
+const Terms = lazy(() => import('./pages/Legal').then((m) => ({ default: m.Terms })))
+const NotFound = lazy(() => import('./pages/NotFound'))
+const Product = lazy(() => import('./pages/Product'))
+const Pack = lazy(() => import('./pages/Pack'))
+const Recipes = lazy(() => import('./pages/Recipes'))
+const Shop = lazy(() => import('./pages/Shop'))
 
 // L'admin est chargé à part : les visiteurs ne téléchargent pas son code.
 const AdminApp = lazy(() => import('./admin/AdminApp'))

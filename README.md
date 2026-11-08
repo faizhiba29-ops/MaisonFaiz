@@ -134,6 +134,14 @@ npm run dev             # http://localhost:5173 — admin : /admin
 
 `vercel.json` configure les redirections de l'application, le cache des fichiers et les en-têtes de sécurité.
 
+### Performance (au build)
+
+`scripts/vite-plugins.mjs` prépare la page d'accueil pour un affichage rapide :
+
+- chaque photo de `public/images` est déclinée en WebP 400 / 800 / pleine taille (le navigateur choisit la bonne via `srcset`) ;
+- le contenu public (catalogue, paramètres, promos) est copié dans `index.html` : la page s'affiche sans attendre Supabase, puis se met à jour en arrière-plan. **Un changement fait dans l'admin est visible tout de suite** ; le contenu intégré est simplement rafraîchi au prochain déploiement ;
+- le CSS est intégré à la page, la photo principale et les polices sont préchargées.
+
 ## Sécurité
 
 | Protection | Détail |

@@ -171,8 +171,8 @@ export default function Cart() {
                   <li key={`${item.type}-${item.id}-${item.weight}`} className="flex gap-4 py-4">
                     <div className="w-[84px] shrink-0 md:w-[110px]">
                       {item.type === 'pack'
-                        ? <Visual image={info?.image} themeName={info?.theme} name={info?.name || 'Pack'} art="duo" />
-                        : info ? <ProductVisual product={info} overlay={false} /> : <div className="aspect-square bg-creme" />}
+                        ? <Visual image={info?.image} themeName={info?.theme} name={info?.name || 'Pack'} art="duo" sizes="110px" />
+                        : info ? <ProductVisual product={info} overlay={false} sizes="110px" /> : <div className="aspect-square bg-creme" />}
                     </div>
                     <div className="flex min-w-0 flex-1 flex-col">
                       <div className="flex items-start justify-between gap-3">
