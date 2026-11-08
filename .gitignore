@@ -41,3 +41,4 @@ supabase/setup_complet.sql
 
 # Rapports générés
 Rapport-audit-*.pdf
+supabase/mise_a_jour_*.sql
