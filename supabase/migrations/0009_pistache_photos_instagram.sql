@@ -5,7 +5,7 @@
 -- ════════════════════════════════════════════════════════════════
 
 update public.products
-set images = array['/images/produits/pistache.jpg', '/images/produits/pistache-bol.jpg']
+set images = array['/images/produits/pistache.jpg', '/images/produits/pistache-bol.jpg', '/images/produits/pistache-chia.jpg']
 where slug = 'granola-pistache' and cardinality(images) = 0;
 
 update public.ingredients set image = '/images/ingredients/' || slug || '.jpg'
