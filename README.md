@@ -121,7 +121,7 @@ npm run dev             # http://localhost:5173 — admin : /admin
 |---|---|---|
 | `VITE_SUPABASE_URL` | `https://votre-projet.supabase.co` | Adresse du projet Supabase |
 | `VITE_SUPABASE_ANON_KEY` | `sb_publishable_…` | Clé **publique** du projet |
-| `VITE_SITE_URL` | `https://www.maisonfaiz.ma` | Adresse publique du site (aperçus de liens) |
+| `VITE_SITE_URL` | `https://www.maisonfaiz.ma` | Adresse publique du site (aperçus de liens). Inutile sur Vercel : le domaine de production est détecté automatiquement |
 
 > ⚠️ Tout ce qui commence par `VITE_` est inclus dans le site et lisible par les visiteurs.
 > N'y mettez **jamais** la clé secrète (`sb_secret_…` / `service_role`) ni l'adresse `postgresql://` de la base. Le site refuse de démarrer s'il détecte une clé secrète.
